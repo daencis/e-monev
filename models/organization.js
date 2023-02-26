@@ -1,7 +1,11 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 
-class Organization extends Model {}
+class Organization extends Model {
+  constructor () {
+    super("emonev_development");
+  }
+}
 
 Organization.init({
   id: {
@@ -19,18 +23,22 @@ Organization.init({
     allowNull: false
   },
   created_at: {
-    type: DataTypes.DATETIME,
+    type: DataTypes.DATE,
     allowNull: true,
     timestamps: true,
     defaultValue: DataTypes.NOW
   },
   updated_at: {
-    type: DataTypes.DATETIME,
+    type: DataTypes.DATE,
     allowNull: true,
     timestamps: true,
     defaultValue: DataTypes.NOW
   }
-}, {
+},
+{
   sequelize,
   modelName: 'organization'
 });
+await Organization.sync();
+
+module.exports = Organization

@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const loginRoutes = require('./user')
+const userRoutes = require('./user/index')
 
-router.get('/', (req, res) => {
+router.get('/user', (req, res) => {
   res.send('Welcome to emonev API')
 })
 
-router.use(loginRoutes)
+// router.use('/user', userRoutes)
 
 
 module.exports = router

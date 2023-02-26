@@ -1,6 +1,10 @@
+const postLogin = require('express').Router()
 
-async function postLogin (app, option){
-  
-}
+postLogin.use('/', (req, res) => {
+    res.send('Welcome to emonev API')
+})
+postLogin.use('/', (req, res) => {
+    res.send('Welcome to emonev API')
+})
 
 module.exports = postLogin

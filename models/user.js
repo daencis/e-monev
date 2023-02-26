@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 const bcrypt = require("bcryptjs");
-const salt = await bcrypt.genSalt(8);
+const salt = bcrypt.genSalt(8);
 
 class User extends Model {}
 
@@ -33,13 +33,13 @@ User.init({
     }
   },
   created_at: {
-    type: DataTypes.DATETIME,
+    type: DataTypes.DATE,
     allowNull: true,
     timestamps: true,
     defaultValue: DataTypes.NOW
   },
   updated_at: {
-    type: DataTypes.DATETIME,
+    type: DataTypes.DATE,
     allowNull: true,
     timestamps: true,
     defaultValue: DataTypes.NOW
@@ -59,4 +59,6 @@ User.init({
 });
 
 User.belongsTo('organization', { foreignKey: 'organization_id' })
+await User.sync();
 
+module.exports = User

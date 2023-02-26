@@ -1,8 +1,6 @@
 {
   "development": {
-    "username": "dev",
-    "password": null,
-    "database": "emonev_development",
+    "database": "emonev_dev",
     "host": "localhost",
     "dialect": "mysql"
   },
@@ -10,7 +8,7 @@
     "username": "test",
     "password": null,
     "database": "emonev_test",
-    "host": "localhost",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {

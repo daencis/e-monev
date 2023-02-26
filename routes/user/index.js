@@ -1,8 +1,9 @@
 const userRouter = require('express').Router()
+
 const getRoutes = require('./get.user')
 const postRoutes = require('./post.user')
 
-userRouter.use(getRoutes)
-userRouter.use(postRoutes)
+userRouter.use('/get', getRoutes)
+userRouter.use('/post', postRoutes)
 
-module.exports = getRoutes
+module.exports = userRouter
