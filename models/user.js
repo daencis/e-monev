@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
+const organization = require('./organization')
 const bcrypt = require("bcryptjs");
-const salt = bcrypt.genSalt(8);
 
 class User extends Model {}
 
@@ -9,12 +9,13 @@ User.init({
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    primaryKey: true,
     autoIncrement: true,
-    primaryKey: true
   },
   username: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   password: {
     type: DataTypes.STRING,
@@ -27,10 +28,10 @@ User.init({
   organization_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-        model: 'organization',
-        key: 'id'
-    }
+    // references: {
+    //     model: 'organizations',
+    //     key: 'id'
+    // }
   },
   created_at: {
     type: DataTypes.DATE,
@@ -48,17 +49,19 @@ User.init({
 {
   hooks: {
     beforeCreate : async (user, options) => {
-      user.password = await bcrypt.hash(user.password, salt);
+      const salt = await bcrypt.genSalt(8);
+      return user.password = await bcrypt.hash(user.password, salt);
+      
     },
     beforeUpdate  : async (user, options) => {
-      user.password = await bcrypt.hash(user.password, salt);
+      const salt = await bcrypt.genSalt(8);
+      return user.password = await bcrypt.hash(user.password, salt);
     },
   },
   sequelize,
   modelName: 'user'
 });
 
-User.belongsTo('organization', { foreignKey: 'organization_id' })
-await User.sync();
-
+// User.belongsTo(organization, { foreignKey: 'organization_id' })
+User.sync({ force: true })
 module.exports = User

@@ -1,5 +1,7 @@
 {
   "development": {
+    "username": "root",
+    "password": "MYSQLdefault",
     "database": "emonev_dev",
     "host": "localhost",
     "dialect": "mysql"

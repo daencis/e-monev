@@ -4,7 +4,8 @@
   "description": "Sebagai salah satu upaya untuk pengendalian dan evaluasi pelaksanaan pembangunan, dengan sistem monitoring dan evaluasi (monev).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon app.js"
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 
-class Organization extends Model {
-  constructor () {
-    super("emonev_development");
-  }
-}
+class Organization extends Model {}
 
 Organization.init({
   id: {
@@ -15,7 +11,7 @@ Organization.init({
     primaryKey: true
   },
   code: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   title: {
@@ -39,6 +35,6 @@ Organization.init({
   sequelize,
   modelName: 'organization'
 });
-await Organization.sync();
+Organization.sync({ force: true })
 
 module.exports = Organization

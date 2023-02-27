@@ -1,10 +1,7 @@
 const postLogin = require('express').Router()
+const controller = require('../../controller/user')
 
-postLogin.use('/', (req, res) => {
-    res.send('Welcome to emonev API')
-})
-postLogin.use('/', (req, res) => {
-    res.send('Welcome to emonev API')
-})
+postLogin.post('/login', controller.login)
+postLogin.post('/register', controller.addUser)
 
 module.exports = postLogin
