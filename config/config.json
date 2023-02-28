@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "MYSQLdefault",
+    "database": "emonev_dev",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "test",
+    "password": null,
+    "database": "emonev_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "production",
+    "password": null,
+    "database": "emonev_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
