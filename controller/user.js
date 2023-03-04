@@ -1,48 +1,37 @@
 const userModel = require('../models/user')
-
-class User {
-    static async login(req, res, next) {
+const app = require('../app')
+exports.login =  async function (req, res, next) {
       try {
-        const { username, password } = req.body;
-        console.log(req.body);
-        console.log(username);
-        console.log(password);
-        if (!username) throw { name: 'usernameRequired' };
-        else if (!password) throw { name: 'PassRequired' };
+        const { username, password } = req.body
+        if (!username) throw { name: 'usernameRequired' }
+        else if (!password) throw { name: 'PassRequired' }
   
-        const user = await userModel.findOne({ where: {username: username} });
-        if (!user) throw { name: 'UserNotFound' };
+        const user = await userModel.findOne({ where: {username: username} })
+        if (!user) throw { name: 'UserNotFound' }
   
-        const validate = await user.validatePassword(password);
-        if (!validate) throw { name: 'InvalidCredentials' };
+        const validate = await user.validatePassword(password)
+        if (!validate) throw { name: 'InvalidCredentials' }
   
-        const payload = { username: user.username };
+        const payload = { username: user.username }
   
-        const payloadClient = {
-          id: user._id.toString(),
-          username: user.username,
-        };
-        if (user.imgUrl) payloadClient.imgUrl = user.imgUrl;
-        if (user.header) payloadClient.header = user.header;
+        const payloadClient = user
+        delete payloadClient.password
   
-        const access_token = jwt.sign(payload, secretKey);
+        const access_token = jwt.sign(payload, secretKey)
   
-        res.status(200).json({ access_token, payloadClient });
+        res.status(200).json({ access_token, payloadClient })
       } catch (error) {
-        next(error);
+        next(error)
       }
-    }
-
-    static async addUser(req, res, next) {
-      try {
-        const newUser = await userModel.create(req.body);
-  
-        res.status(201).json(newUser);
-      } catch (err) {
-        console.log(err);
-        next(err);
-      }
-    }
 }
 
-module.exports = User
+exports.addUser =  async function (req, res, next) {
+  try {
+    const newUser = await req.app.settings.db.models.user.create(req.body);
+
+    res.status(201).json({ statusCode: 200, data: newUser});
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}

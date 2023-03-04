@@ -1,7 +1,8 @@
-const getRouter = require('express').Router()
+const express = require('express')
+const router = express.Router()
 
-getRouter.get('/', (req, res) => {
+router.get('/profile', (req, res) => {
     res.send('Welcome to emonev API')
 })
 
-module.exports = getRouter
+module.exports = router
