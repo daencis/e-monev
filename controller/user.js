@@ -1,12 +1,10 @@
-const userModel = require('../models/user')
-const app = require('../app')
 exports.login =  async function (req, res, next) {
       try {
         const { username, password } = req.body
         if (!username) throw { name: 'usernameRequired' }
         else if (!password) throw { name: 'PassRequired' }
   
-        const user = await userModel.findOne({ where: {username: username} })
+        const user = await req.app.settings.db.models.user.findOne({ where: {username: username} })
         if (!user) throw { name: 'UserNotFound' }
   
         const validate = await user.validatePassword(password)
@@ -31,7 +29,6 @@ exports.addUser =  async function (req, res, next) {
 
     res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {
-    console.log(err);
     next(err);
   }
 }
