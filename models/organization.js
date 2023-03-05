@@ -14,6 +14,14 @@ module.exports = (app, sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    status_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+          model: 'status',
+          key: 'id'
+      }
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -27,6 +35,10 @@ module.exports = (app, sequelize, DataTypes) => {
       defaultValue: DataTypes.NOW
     }
   })
+
+  organization.associate = (models) => {
+    organization.belongsTo(models.status, { foreignKey: 'status_id' })
+  }
 
   return organization;
 };

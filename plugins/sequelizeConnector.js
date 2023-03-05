@@ -2,6 +2,7 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 
 function plugin(app, options) {
+  console.log(options);
     const instance = options.instance || 'sequelize'
     const autoConnect = options.autoConnect || true
   

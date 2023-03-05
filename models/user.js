@@ -37,6 +37,14 @@ module.exports = (app, sequelize, DataTypes) => {
           key: 'id'
       }
     },
+    status_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+          model: 'status',
+          key: 'id'
+      }
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -67,6 +75,7 @@ module.exports = (app, sequelize, DataTypes) => {
   user.associate = (models) => {
     user.belongsTo(models.admin_role, { foreignKey: 'admin_role_id' })
     user.belongsTo(models.organization, { foreignKey: 'organization_id' })
+    user.belongsTo(models.status, { foreignKey: 'status_id' })
   }
 
   return user;

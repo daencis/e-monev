@@ -24,12 +24,13 @@ app.set(database(app, {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
 }), "db")
-// app.use(function(req, res, next){
-//   next()
-// })
+
 app.use('/', require('./routes/index'))
 app.use('/user', require('./routes/user'))
-app.use('/org', require('./routes/index'))
+app.use('/org', require('./routes/organization'))
+app.use('/occasion', require('./routes/occassion'))
+app.use('/program', require('./routes/program'))
+// app.use('/activity', require('./routes/activity'))
 app.use(errorHandler)
 
 app.listen(port, () => {
