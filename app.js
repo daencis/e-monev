@@ -30,6 +30,7 @@ app.use('/org', require('./routes/organization'))
 app.use('/occasion', require('./routes/occassion'))
 app.use('/program', require('./routes/program'))
 app.use('/activity', require('./routes/activity'))
+// app.use('/static', require('./routes/static'))
 app.use(errorHandler)
 
 app.listen(port, () => {

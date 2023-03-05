@@ -2,7 +2,6 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 
 function plugin(app, options) {
-  // console.log(options);
     const instance = options.instance || 'sequelize'
     const autoConnect = options.autoConnect || true
   
@@ -14,8 +13,14 @@ function plugin(app, options) {
         logging: options.logging,
         host: options.host,
         dialect: options.dialect,
-        pool: options.pool
-      }
+        pool: options.pool,
+        "define": {
+          "freezeTableName": true,
+          "createdAt": false,
+          "updatedAt": false
+        }
+      },
+      
     )
     if (autoConnect)
       return sequelize.authenticate().then(decorate())
@@ -26,9 +31,7 @@ function plugin(app, options) {
     function decorate() {
       // init model
       fs.readdirSync(`${__dirname}/../models`).forEach(route => {
-        if(route == 'index.js'){
-  
-        }else require(`${__dirname}/../models/${route}`)(app, sequelize, Sequelize)
+        require(`${__dirname}/../models/${route}`)(app, sequelize, Sequelize)
       })
   
       // init model association

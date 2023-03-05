@@ -35,7 +35,7 @@ exports.updatePurpose =  async function (req, res, next) {
       const purpose = await req.app.settings.db.models.purpose.findByPk(req.body.purpose_id);
 
       if(!purpose){
-        throw { name: 'NotFound' };
+        next("NotFound")
       }
 
       await purpose.update(req.body)
@@ -48,9 +48,9 @@ exports.updatePurpose =  async function (req, res, next) {
 
 exports.deletePurpose =  async function (req, res, next) {
   try {
-    const newUser = await req.app.settings.db.models.purpose.create(req.body);
+    const newPurpose = await req.app.settings.db.models.purpose.findByPk(req.body.purpose_id);
 
-    return res.status(201).json({ statusCode: 200, data: newUser});
+    return res.status(201).json({ statusCode: 200, data: newPurpose});
   } catch (err) {
     next(err); 
   }

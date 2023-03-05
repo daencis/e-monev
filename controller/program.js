@@ -42,9 +42,9 @@ exports.updateProgram =  async function (req, res, next) {
 
 exports.deleteProgram =  async function (req, res, next) {
     try {
-        const newUser = await req.app.settings.db.models.program.create(req.body);
+        const newProgram = await req.app.settings.db.models.program.create(req.body);
 
-        return res.status(200).json({ statusCode: 200, data: newUser});
+        return res.status(200).json({ statusCode: 200, data: newProgram});
     } catch (err) {
         next(err); 
     }

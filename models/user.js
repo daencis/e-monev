@@ -58,6 +58,7 @@ module.exports = (app, sequelize, DataTypes) => {
       defaultValue: DataTypes.NOW
     }
   })
+  
   user.addHook('beforeCreate', async user => {
     if (user.password){
         const salt = await bcrypt.genSalt(8);

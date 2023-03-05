@@ -1,4 +1,5 @@
 const errorHandler = (err, req, res, next) => {
+    console.log(err);
     switch (err.name) {
         case "EmailRequired":
             res.status(400).json({ message: "Email is required" })
@@ -13,7 +14,7 @@ const errorHandler = (err, req, res, next) => {
             res.status(400).json({ statusCode: 400, message: "User not Found" })
             break;
         case "InvalidCredentials":
-            res.status(401).json({ statusCode: 400, message: "Invalid email/password" })
+            res.status(401).json({ statusCode: 400, message: "Invalid username/password" })
             break;
         case "NoInput":
             res.status(400).json({ statusCode: 400, message: "Please fill all input fields" })
