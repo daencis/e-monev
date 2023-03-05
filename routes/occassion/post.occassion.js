@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-router.get('/profile', (req, res) => {
+router.post('/create', (req, res) => {
     return res.send('Welcome to emonev API')
 })
 

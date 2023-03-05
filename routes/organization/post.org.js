@@ -1,6 +1,6 @@
-const postOrg = require('express').Router()
+const router = require('express').Router()
 const controller = require('../../controller/organization')
 
-postOrg.post('/create', controller.createOrganization)
+router.post('/create', controller.createOrganization)
 
-module.exports = postOrg
+module.exports = router
