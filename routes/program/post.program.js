@@ -1,7 +1,6 @@
 const router = require('express').Router()
+const controller = require('../../controller/program');
 
-router.post('/create', (req, res) => {
-    return res.send('Welcome to emonev API')
-})
+router.post('/create', controller.createProgram)
 
 module.exports = router

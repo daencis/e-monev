@@ -1,7 +1,7 @@
 const router = require('express').Router()
+const controller = require('../../controller/organization');
 
-router.patch('/update', (req, res) => {
-    return  res.send('Welcome to emonev API')
-})
+router.patch('/update', controller.updateOrganization)
+router.patch('/delete', controller.deleteOrganization)
 
 module.exports = router

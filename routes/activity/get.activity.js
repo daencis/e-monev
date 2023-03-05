@@ -1,11 +1,8 @@
 const router = require('express').Router()
+const controller = require('../../controller/activity');
 
-router.get('/list', (req, res) => {
-    return res.send('Welcome to emonev API')
-})
+router.get('/list', controller.getListActivity)
 
-router.get('/detail/:id', (req, res) => {
-    return res.send('Welcome to emonev API')
-})
+router.get('/detail/:id', controller.getDetailActivity)
 
 module.exports = router

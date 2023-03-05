@@ -1,4 +1,4 @@
-exports.getListActivity =  async function (req, res, next) {
+exports.getListProgram =  async function (req, res, next) {
     try {
 
         res.status(201).json({ statusCode: 200, data: newUser});
@@ -7,17 +7,26 @@ exports.getListActivity =  async function (req, res, next) {
     }
 }
 
-exports.getDetailActivity =  async function (req, res, next) {
+exports.getDetailProgram =  async function (req, res, next) {
     try {
         res.status(201).json({ statusCode: 200, data: newUser});
     } catch (error) {
       next(error)
     }
 }
-
-exports.createActivity =  async function (req, res, next) {
+exports.createProgram =  async function (req, res, next) {
     try {
-        const newUser = await req.app.settings.db.models.activity.create(req.body);
+        const newUser = await req.app.settings.db.models.program.create(req.body);
+
+        res.status(201).json({ statusCode: 200, data: newUser});
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.updateProgram =  async function (req, res, next) {
+    try {
+        const newUser = await req.app.settings.db.models.program.create(req.body);
 
         res.status(201).json({ statusCode: 200, data: newUser});
     } catch (err) {
@@ -25,19 +34,9 @@ exports.createActivity =  async function (req, res, next) {
     }
 }
 
-exports.updateActivity =  async function (req, res, next) {
+exports.deleteProgram =  async function (req, res, next) {
     try {
-        const newUser = await req.app.settings.db.models.activity.create(req.body);
-
-        res.status(201).json({ statusCode: 200, data: newUser});
-    } catch (err) {
-        next(err); 
-    }
-}
-
-exports.deleteActivity =  async function (req, res, next) {
-    try {
-        const newUser = await req.app.settings.db.models.activity.create(req.body);
+        const newUser = await req.app.settings.db.models.program.create(req.body);
 
         res.status(201).json({ statusCode: 200, data: newUser});
     } catch (err) {

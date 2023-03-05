@@ -1,7 +1,6 @@
 const router = require('express').Router()
+const controller = require('../../controller/occassion');
 
-router.post('/create', (req, res) => {
-    return res.send('Welcome to emonev API')
-})
+router.post('/create', controller.createOccassion)
 
 module.exports = router

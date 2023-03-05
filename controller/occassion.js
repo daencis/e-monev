@@ -23,3 +23,23 @@ exports.createOccassion =  async function (req, res, next) {
         next(err);
     }
 }
+
+exports.updateOccassion =  async function (req, res, next) {
+    try {
+        const newUser = await req.app.settings.db.models.occassion.create(req.body);
+
+        res.status(201).json({ statusCode: 200, data: newUser});
+    } catch (err) {
+        next(err); 
+    }
+}
+
+exports.deleteOccassion =  async function (req, res, next) {
+    try {
+        const newUser = await req.app.settings.db.models.occassion.create(req.body);
+
+        res.status(201).json({ statusCode: 200, data: newUser});
+    } catch (err) {
+        next(err); 
+    }
+}
