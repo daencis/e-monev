@@ -1,7 +1,11 @@
 exports.getListProgram =  async function (req, res, next) {
     try {
-
-        res.status(201).json({ statusCode: 200, data: newUser});
+        const {totalProgram, listProgram} = await req.app.settings.db.models.program.findAndCountAll({
+            offset: req.query.offset,
+            limit: req.query.limit,
+          });
+      
+        res.status(200).json({ statusCode: 200, data: {total: totalProgram, result: listProgram}});
     } catch (error) {
       next(error)
     }

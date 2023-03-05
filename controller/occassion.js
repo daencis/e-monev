@@ -1,7 +1,11 @@
 exports.getListOccassion =  async function (req, res, next) {
     try {
+        const {totalOccassion, listOccassion} = await req.app.settings.db.models.occassion.findAndCountAll({
+            offset: req.query.offset,
+            limit: req.query.limit,
+        });
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        res.status(200).json({ statusCode: 200, data: {total: totalOccassion, result: listOccassion}});
     } catch (error) {
       next(error)
     }

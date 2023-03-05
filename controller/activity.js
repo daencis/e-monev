@@ -1,7 +1,11 @@
 exports.getListActivity =  async function (req, res, next) {
     try {
+        const {totalActivity, listActivity} = await req.app.settings.db.models.activity.findAndCountAll({
+            offset: req.query.offset,
+            limit: req.query.limit,
+        });
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        res.status(200).json({ statusCode: 200, data: {total: totalActivity, result: listActivity}});
     } catch (error) {
       next(error)
     }

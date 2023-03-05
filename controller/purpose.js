@@ -1,7 +1,11 @@
 exports.getListPurpose =  async function (req, res, next) {
     try {
-
-        res.status(201).json({ statusCode: 200, data: newUser});
+      const {totalPurpose, listPurpose} = await req.app.settings.db.models.purpose.findAndCountAll({
+        offset: req.query.offset,
+        limit: req.query.limit,
+      });
+  
+      res.status(200).json({ statusCode: 200, data: {total: totalPurpose, result: listPurpose}});
     } catch (error) {
       next(error)
     }

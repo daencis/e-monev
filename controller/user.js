@@ -35,8 +35,12 @@ exports.addUser =  async function (req, res, next) {
 
 exports.getListUser =  async function (req, res, next) {
   try {
+    const {totalUser, listUser} = await req.app.settings.db.models.user.findAndCountAll({
+      offset: req.query.offset,
+      limit: req.query.limit,
+    });
 
-      res.status(201).json({ statusCode: 200, data: newUser});
+    res.status(200).json({ statusCode: 200, data: {total: totalUser, result: listUser}});
   } catch (error) {
     next(error)
   }
