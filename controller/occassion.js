@@ -13,7 +13,9 @@ exports.getListOccassion =  async function (req, res, next) {
 
 exports.getDetailOccassion =  async function (req, res, next) {
     try {
-        res.status(201).json({ statusCode: 200, data: newUser});
+        const occassionDetail = await req.app.settings.db.models.occassion.findByPk(req.params.id);
+  
+        return res.status(200).json({ statusCode: 200, data: {result: occassionDetail}});
     } catch (error) {
       next(error)
     }

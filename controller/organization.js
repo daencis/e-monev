@@ -13,7 +13,9 @@ exports.getListOrganization =  async function (req, res, next) {
 
 exports.getDetailOrganization =  async function (req, res, next) {
   try {
-      res.status(201).json({ statusCode: 200, data: newUser});
+    const organizationDetail = await req.app.settings.db.models.organization.findByPk(req.params.id);
+  
+    return res.status(200).json({ statusCode: 200, data: {result: organizationDetail}});
   } catch (error) {
     next(error)
   }

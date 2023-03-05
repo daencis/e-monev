@@ -13,16 +13,18 @@ exports.getListProgram =  async function (req, res, next) {
 
 exports.getDetailProgram =  async function (req, res, next) {
     try {
-        res.status(201).json({ statusCode: 200, data: newUser});
+        const programDetail = await req.app.settings.db.models.program.findByPk(req.params.id);
+  
+        return res.status(200).json({ statusCode: 200, data: {result: programDetail}});
     } catch (error) {
       next(error)
     }
 }
 exports.createProgram =  async function (req, res, next) {
     try {
-        const newUser = await req.app.settings.db.models.program.create(req.body);
+        const newProgram = await req.app.settings.db.models.program.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        res.status(201).json({ statusCode: 200, data: newProgram});
     } catch (err) {
         next(err);
     }
@@ -30,9 +32,9 @@ exports.createProgram =  async function (req, res, next) {
 
 exports.updateProgram =  async function (req, res, next) {
     try {
-        const newUser = await req.app.settings.db.models.program.create(req.body);
+        const program = await req.app.settings.db.models.program.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        res.status(201).json({ statusCode: 200, data: program});
     } catch (err) {
         next(err); 
     }
@@ -42,7 +44,7 @@ exports.deleteProgram =  async function (req, res, next) {
     try {
         const newUser = await req.app.settings.db.models.program.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        return res.status(200).json({ statusCode: 200, data: newUser});
     } catch (err) {
         next(err); 
     }

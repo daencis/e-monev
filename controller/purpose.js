@@ -5,7 +5,7 @@ exports.getListPurpose =  async function (req, res, next) {
         limit: req.query.limit,
       });
   
-      res.status(200).json({ statusCode: 200, data: {total: totalPurpose, result: listPurpose}});
+      return res.status(200).json({ statusCode: 200, data: {total: totalPurpose, result: listPurpose}});
     } catch (error) {
       next(error)
     }
@@ -13,16 +13,18 @@ exports.getListPurpose =  async function (req, res, next) {
 
 exports.getDetailPurpose =  async function (req, res, next) {
     try {
-        res.status(201).json({ statusCode: 200, data: newUser});
+      const purposeDetail = await req.app.settings.db.models.purpose.findByPk(req.params.id);
+  
+      return res.status(200).json({ statusCode: 200, data: {result: purposeDetail}});
     } catch (error) {
       next(error)
     }
 }
 exports.createPurpose =  async function (req, res, next) {
   try {
-    const newUser = await req.app.settings.db.models.user.create(req.body);
+    const newPurpose = await req.app.settings.db.models.purpose.create(req.body);
 
-    res.status(201).json({ statusCode: 200, data: newUser});
+    return res.status(201).json({ statusCode: 200, data: newPurpose});
   } catch (err) {
     next(err);
   }
@@ -30,9 +32,15 @@ exports.createPurpose =  async function (req, res, next) {
 
 exports.updatePurpose =  async function (req, res, next) {
   try {
-      const newUser = await req.app.settings.db.models.purpose.create(req.body);
+      const purpose = await req.app.settings.db.models.purpose.findByPk(req.body.purpose_id);
 
-      res.status(201).json({ statusCode: 200, data: newUser});
+      if(!purpose){
+        throw { name: 'NotFound' };
+      }
+
+      await purpose.update(req.body)
+
+      return res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {
       next(err); 
   }
@@ -40,10 +48,10 @@ exports.updatePurpose =  async function (req, res, next) {
 
 exports.deletePurpose =  async function (req, res, next) {
   try {
-      const newUser = await req.app.settings.db.models.purpose.create(req.body);
+    const newUser = await req.app.settings.db.models.purpose.create(req.body);
 
-      res.status(201).json({ statusCode: 200, data: newUser});
+    return res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {
-      next(err); 
+    next(err); 
   }
 }
