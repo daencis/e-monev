@@ -1,7 +1,7 @@
-const getRouter = require('express').Router()
+const router = require('express').Router()
 const controller = require('../../controller/organization')
 
+router.get('/list', controller.getListOrganization)
+router.get('/detail/:id', controller.getDetailOrganization)
 
-getRouter.get('/list', controller.getOrg)
-
-module.exports = getRouter
+module.exports = router

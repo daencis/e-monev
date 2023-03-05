@@ -1,13 +1,9 @@
-const router = require('express').Router()
-const userRoutes = require('./user/index')
-const orgRoutes = require('./organization/index')
+const express = require('express')
+const router = express.Router()
 
-router.get('/', (req, res) => {
-  res.send('Welcome to emonev API')
+router.get('/', async (req, res) => {
+  return res.send('Welcome to emonev API')
 })
-
-router.use('/user', userRoutes)
-router.use('/org', orgRoutes)
 
 
 module.exports = router

@@ -1,8 +1,8 @@
 const routes = require('express').Router()
 
-const getRoutes = require('./get.user')
-const postRoutes = require('./post.user')
-const patchRoutes = require('./patch.user')
+const getRoutes = require('./get.purpose')
+const postRoutes = require('./post.purpose')
+const patchRoutes = require('./patch.purpose')
 
 routes.use('/', getRoutes)
 routes.use('/', postRoutes)
