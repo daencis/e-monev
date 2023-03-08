@@ -1,4 +1,4 @@
-module.exports = (app ,sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
     const purpose = sequelize.define("purpose", {
       id: {
         type: DataTypes.INTEGER,
@@ -8,7 +8,12 @@ module.exports = (app ,sequelize, DataTypes) => {
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Judul harus diisi.'
+          }
+        }
       },
     })
   

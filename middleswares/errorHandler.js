@@ -1,38 +1,34 @@
 const errorHandler = (err, req, res, next) => {
-    console.log(err);
     switch (err.name) {
         case "EmailRequired":
             res.status(400).json({ message: "Email is required" })
             break;
         case "usernameRequired":
-            res.status(400).json({ message: "Username is required" })
+            res.status(400).json({ message: "Username perlu diisi" })
             break;
         case "PassRequired":
-            res.status(400).json({ statusCode: 400, message: "Password is required" })
+            res.status(400).json({ statusCode: 400, message: "Kata sandi perlu diisi" })
             break;
         case "UserNotFound":
-            res.status(400).json({ statusCode: 400, message: "User not Found" })
+            res.status(400).json({ statusCode: 400, message: "Data user tidak ditemukan" })
             break;
         case "InvalidCredentials":
-            res.status(401).json({ statusCode: 400, message: "Invalid username/password" })
+            res.status(401).json({ statusCode: 400, message: "Username/password salah" })
             break;
         case "NoInput":
-            res.status(400).json({ statusCode: 400, message: "Please fill all input fields" })
+            res.status(400).json({ statusCode: 400, message: "Mohon isi data yang diperlukan" })
             break;
         case "TokenNotFound":
-            res.status(401).json({ statusCode: 400, message: "Access token not found" })
+            res.status(401).json({ statusCode: 400, message: "Akses token tidak ditemukan" })
             break;
         case "JsonWebTokenError":
-            res.status(401).json({ statusCode: 400, message: "Invalid token" })
+            res.status(401).json({ statusCode: 400, message: "Akses token salah" })
             break;
         case "NotFound":
-            res.status(404).json({ statusCode: 400, message: "Content not found" })
+            res.status(404).json({ statusCode: 400, message: "Data yang dicari tidak ditemukan" })
             break;
         case "Forbidden":
-            res.status(403).json({ statusCode: 400, message: "Forbidden access"})
-            break;
-        case "EditInput":
-            res.status(400).json({ statusCode: 400, message: "Please input required fields on edit form"})
+            res.status(403).json({ statusCode: 400, message: "Akses tidak diperbolehkan"})
             break;
         default:
             res.status(500).json({ statusCode: 400, message: "Internal server error" })

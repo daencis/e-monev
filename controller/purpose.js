@@ -1,6 +1,8 @@
+const Purpose = require('../models').purpose;
+
 exports.getListPurpose =  async function (req, res, next) {
     try {
-      const {totalPurpose, listPurpose} = await req.app.settings.db.models.purpose.findAndCountAll({
+      const {totalPurpose, listPurpose} = await Purpose.findAndCountAll({
         offset: req.query.offset,
         limit: req.query.limit,
       });
@@ -13,7 +15,7 @@ exports.getListPurpose =  async function (req, res, next) {
 
 exports.getDetailPurpose =  async function (req, res, next) {
     try {
-      const purposeDetail = await req.app.settings.db.models.purpose.findByPk(req.params.id);
+      const purposeDetail = await Purpose.findByPk(req.params.id);
   
       return res.status(200).json({ statusCode: 200, data: {result: purposeDetail}});
     } catch (error) {
@@ -22,7 +24,7 @@ exports.getDetailPurpose =  async function (req, res, next) {
 }
 exports.createPurpose =  async function (req, res, next) {
   try {
-    const newPurpose = await req.app.settings.db.models.purpose.create(req.body);
+    const newPurpose = await Purpose.create(req.body);
 
     return res.status(201).json({ statusCode: 200, data: newPurpose});
   } catch (err) {
@@ -32,7 +34,7 @@ exports.createPurpose =  async function (req, res, next) {
 
 exports.updatePurpose =  async function (req, res, next) {
   try {
-      const purpose = await req.app.settings.db.models.purpose.findByPk(req.body.purpose_id);
+      const purpose = await Purpose.findByPk(req.body.purpose_id);
 
       if(!purpose){
         next("NotFound")
@@ -48,7 +50,7 @@ exports.updatePurpose =  async function (req, res, next) {
 
 exports.deletePurpose =  async function (req, res, next) {
   try {
-    const newPurpose = await req.app.settings.db.models.purpose.findByPk(req.body.purpose_id);
+    const newPurpose = await Purpose.findByPk(req.body.purpose_id);
 
     return res.status(201).json({ statusCode: 200, data: newPurpose});
   } catch (err) {

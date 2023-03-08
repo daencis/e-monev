@@ -27,16 +27,12 @@ class Middleware {
 
   static async validatePassword (req, res, next) {
     try {
-      console.log(res);
-      console.log(next);
       const user = await req.app.settings.db.models.user.findOne({ username: payload.username });
       if (!user) throw { name: "UserNotFound" };
 
       const pass = req.body.password
 
       const cek = bcrypt.compareSync(req.body.password, user.password)
-      console.log(cek);
-      console.log("apani cek");
       req.user = user;
       delete req.user.password;
       
