@@ -1,4 +1,4 @@
-module.exports = (app ,sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const admin_role = sequelize.define("admin_role", {
     id: {
       type: DataTypes.INTEGER,
@@ -8,7 +8,7 @@ module.exports = (app ,sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
   })
 

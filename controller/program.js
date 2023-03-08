@@ -1,11 +1,20 @@
+const Program = require('../models').program;
+
 exports.getListProgram =  async function (req, res, next) {
     try {
-        const {totalProgram, listProgram} = await req.app.settings.db.models.program.findAndCountAll({
-            offset: req.query.offset,
-            limit: req.query.limit,
-          });
-      
-        res.status(200).json({ statusCode: 200, data: {total: totalProgram, result: listProgram}});
+        const {totalProgram, listProgram} = await Program.findAndCountAll({
+            offset: Number(req.query.offset) || 0,
+            limit: Number(req.query.limit) || 10,
+        });
+        
+        res.status(200).json({
+            statusCode: 200,
+            message: "Pengambilan data berhasil",
+            data: {
+                total: totalProgram,
+                result: listProgram
+            }
+        });
     } catch (error) {
       next(error)
     }
@@ -13,18 +22,32 @@ exports.getListProgram =  async function (req, res, next) {
 
 exports.getDetailProgram =  async function (req, res, next) {
     try {
-        const programDetail = await req.app.settings.db.models.program.findByPk(req.params.id);
-  
-        return res.status(200).json({ statusCode: 200, data: {result: programDetail}});
+        const programDetail = await Program.findByPk(req.params.id);
+
+        if(!programDetail){
+            next("NotFound")
+        }
+
+        res.status(200).json({
+            statusCode: 200,
+            message: "Pengambilan data berhasil",
+            data: {
+                result: programDetail
+            }
+        });
     } catch (error) {
       next(error)
     }
 }
 exports.createProgram =  async function (req, res, next) {
     try {
-        const newProgram = await req.app.settings.db.models.program.create(req.body);
+        const newProgram = await Program.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: newProgram});
+        res.status(201).json({
+            statusCode: 200,
+            message: "Pembuatan data berhasil",
+            data: newProgram
+        });
     } catch (err) {
         next(err);
     }
@@ -32,9 +55,20 @@ exports.createProgram =  async function (req, res, next) {
 
 exports.updateProgram =  async function (req, res, next) {
     try {
-        const program = await req.app.settings.db.models.program.create(req.body);
+        const program = await Program.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: program});
+        if(!program){
+            next("NotFound")
+        }
+    
+        await program.update(req.body)
+        await program.save()
+
+        res.status(201).json({
+            statusCode: 200,
+            message: "Pengkinian data berhasil",
+            data: program
+        });
     } catch (err) {
         next(err); 
     }
@@ -42,9 +76,18 @@ exports.updateProgram =  async function (req, res, next) {
 
 exports.deleteProgram =  async function (req, res, next) {
     try {
-        const newProgram = await req.app.settings.db.models.program.create(req.body);
+        const program = await Program.findByPk(req.body.program_id);
 
-        return res.status(200).json({ statusCode: 200, data: newProgram});
+        if(!program){
+            next("NotFound")
+        }
+
+        await program.destroy()
+
+        res.status(200).json({
+            statusCode: 200,
+            message: "Penghapusan data berhasil",
+        });
     } catch (err) {
         next(err); 
     }

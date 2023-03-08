@@ -1,10 +1,8 @@
-const { body, validationResult, checkSchema } = require('express-validator');
-const middleware = require('../middleswares/authentication')
+const User = require('../models').user;
+const Status = require('../models').status;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRETKEY;
-
-
 
 exports.login =  async function (req, res, next) {
   try {
@@ -12,10 +10,12 @@ exports.login =  async function (req, res, next) {
     if (!username) throw { name: 'usernameRequired' }
     else if (!password) throw { name: 'PassRequired' }
 
-    const user = await req.app.settings.db.models.user.findOne({
-      attributes: 
-      {exclude: ['password']},
-      where: {username: username} })
+    const user = await User.findOne({
+      where: {
+        username: username
+      }
+    })
+
     if (!user) throw { name: 'UserNotFound' }
     
     const validate = bcrypt.compareSync(req.body.password, user.password)
@@ -23,7 +23,6 @@ exports.login =  async function (req, res, next) {
     if (!validate) throw { name: 'InvalidCredentials' }
 
     const payload = user.dataValues
-    console.log(payload);
     let payloadClient = user
     delete payloadClient["password"]
 
@@ -37,9 +36,14 @@ exports.login =  async function (req, res, next) {
 
 exports.getListUser =  async function (req, res, next) {
   try {
-    const {totalUser, listUser} = await req.app.settings.db.models.user.findAndCountAll({
-      offset: req.query.offset,
-      limit: req.query.limit,
+    const search = []
+    if(req.query.search && req.query.search !== '' && req.query.search !== null){
+      search.push()
+    }
+    const {totalUser, listUser} = await User.findAndCountAll({
+      where: {status_id: 1},
+      offset: Number(req.query.offset) || 0,
+      limit: Number(req.query.limit) || 10,
     });
 
     res.status(200).json({ statusCode: 200, data: {total: totalUser, result: listUser}});
@@ -50,15 +54,26 @@ exports.getListUser =  async function (req, res, next) {
 
 exports.getDetailUser =  async function (req, res, next) {
   try {
-    return res.status(201).json({ statusCode: 200, data: newUser});
+    console.log("getDetailUser");
+    const user = await User.findByPk(req.user.id, {
+      where: {status_id: 1},
+      attributes: {exclude: ['password']},
+      include: [
+        {
+          model: Status,
+          as: 'status',
+        }
+      ]
+    });
+
+    return res.status(201).json({ statusCode: 200, data: user});
   } catch (error) {
     next(error)
   }
 }
 exports.createUser =  async function (req, res, next) {
   try {
-    validationResult(req)
-    const newUser = await req.app.settings.db.models.user.create(req.body);
+    const newUser = await User.create(req.body);
 
     res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {
@@ -68,7 +83,7 @@ exports.createUser =  async function (req, res, next) {
 
 exports.updateUser =  async function (req, res, next) {
   try {
-    const newUser = await req.app.settings.db.models.user.create(req.body);
+    const newUser = await User.create(req.body);
 
     return res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {
@@ -78,7 +93,7 @@ exports.updateUser =  async function (req, res, next) {
 
 exports.deleteUser =  async function (req, res, next) {
   try {
-      const newUser = await req.app.settings.db.models.user.create(req.body);
+      const newUser = await User.create(req.body);
 
       res.status(201).json({ statusCode: 200, data: newUser});
   } catch (err) {

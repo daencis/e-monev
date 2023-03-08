@@ -1,7 +1,8 @@
-const router = require('express').Router()
+const app = require('express').Router();
 const controller = require('../../controller/organization');
+const middleware = require('../../middleswares/authentication');
 
-router.patch('/update', controller.updateOrganization)
-router.patch('/delete', controller.deleteOrganization)
+app.patch('/update', middleware.authentication, controller.updateOrganization)
+app.patch('/delete', middleware.authentication, controller.deleteOrganization)
 
-module.exports = router
+module.exports = app

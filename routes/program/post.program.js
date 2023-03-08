@@ -1,6 +1,7 @@
-const router = require('express').Router()
+const app = require('express').Router();
 const controller = require('../../controller/program');
+const middleware = require('../../middleswares/authentication')
 
-router.post('/create', controller.createProgram)
+app.post('/create', middleware.authentication, controller.createProgram)
 
-module.exports = router
+module.exports = app

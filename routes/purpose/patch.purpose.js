@@ -1,8 +1,7 @@
-const router = require('express').Router()
+const app = require('express').Router()
 const controller = require('../../controller/purpose');
+const middleware = require('../../middleswares/authentication')
 
-router.patch('/update', (req, res) => {
-    return  res.send('Welcome to emonev API')
-})
+app.patch('/update',  middleware.authentication, controller.updatePurpose)
 
-module.exports = router
+module.exports = app

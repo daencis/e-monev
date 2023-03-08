@@ -1,10 +1,11 @@
-const router = require('express').Router()
+const app = require('express').Router()
 const controller = require('../../controller/user');
+const middleware = require('../../middleswares/authentication');
 
-router.get('/profile', controller.getDetailUser)
+app.get('/profile', middleware.authentication, controller.getDetailUser)
 
-router.get('/list', controller.getListUser)
+app.get('/list', middleware.authentication, controller.getListUser)
 
-router.get('/detail/:id',controller.getDetailUser)
+app.get('/detail/:id', middleware.authentication, controller.getDetailUser)
 
-module.exports = router
+module.exports = app

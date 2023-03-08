@@ -1,4 +1,5 @@
 require("dotenv").config();
+const http = require('http')
 const express = require('express')
 const port = process.env.PORT
 const errorHandler = require('./middleswares/errorHandler')
@@ -10,31 +11,23 @@ const app = express({
 })
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-const database = require('./plugins/sequelizeConnector')
 
-app.set(database(app, {
-  instance: 'db',
-  autoConnect: true,
-  dialect: 'mysql',
-  logging: true,
 
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-}), "db")
-
-app.use('/', require('./routes/index'))
-app.use('/user', require('./routes/user'))
-app.use('/org', require('./routes/organization'))
-app.use('/occasion', require('./routes/occassion'))
-app.use('/program', require('./routes/program'))
-app.use('/activity', require('./routes/activity'))
-// app.use('/static', require('./routes/static'))
+require('./routes/index')(app)
+require('./routes/user')(app)
+require('./routes/organization')(app)
+require('./routes/occassion')(app)
+require('./routes/program')(app)
+require('./routes/activity')(app)
+app.get('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
 app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+app.set('port', port)
+
+const server = http.createServer(app)
+server.listen(port)
 
 module.exports = app

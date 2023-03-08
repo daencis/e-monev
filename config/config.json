@@ -5,7 +5,13 @@
       "password": "MYSQLdefault",
       "database": "emonev_dev",
       "host": "127.0.0.1",
-      "dialect": "mysql"
+      "dialect": "mysql",
+      "define": {
+        "id": false,
+        "createdAt": false,
+        "updatedAt": false,
+        "freezeTableName":true
+      }
   },
   "test": {
     "username": "test",
@@ -19,6 +25,21 @@
     "password": null,
     "database": "emonev_production",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "define": {
+      "id": false,
+      "createdAt": false,
+      "updatedAt": false,
+      "freezeTableName":true
+    },
+    "pool": {
+      "max": 20,
+      "min": 1,
+      "idle": 10000,
+      "acquire": 60000
+    },
+    "dialectOptions": {
+      "connectTimeout": 60000
+    }
   }
 }

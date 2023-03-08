@@ -1,4 +1,4 @@
-module.exports = (app ,sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
     const program = sequelize.define("program", {
       id: {
         type: DataTypes.INTEGER,
@@ -8,13 +8,23 @@ module.exports = (app ,sequelize, DataTypes) => {
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Judul harus diisi.'
+          }
+        }
       },
       code: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Kode harus diisi.'
+          }
+        }
       },
-      reated_at: {
+      created_at: {
         type: DataTypes.DATE,
         allowNull: true,
         timestamps: true,

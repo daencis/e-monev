@@ -1,4 +1,4 @@
-module.exports = (app ,sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
     const occasion = sequelize.define("occasion", {
       id: {
         type: DataTypes.INTEGER,
@@ -8,15 +8,30 @@ module.exports = (app ,sequelize, DataTypes) => {
       },
       code: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Kode harus diisi.'
+          }
+        }
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Judul harus diisi.'
+          }
+        }
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: 'Name harus diisi.'
+          }
+        }
       },
       status_id: {
         type: DataTypes.INTEGER,
