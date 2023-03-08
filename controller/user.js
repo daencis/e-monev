@@ -1,4 +1,5 @@
 const User = require('../models').user;
+const Status = require('../models').status;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRETKEY;
@@ -35,9 +36,14 @@ exports.login =  async function (req, res, next) {
 
 exports.getListUser =  async function (req, res, next) {
   try {
+    const search = []
+    if(req.query.search && req.query.search !== '' && req.query.search !== null){
+      search.push()
+    }
     const {totalUser, listUser} = await User.findAndCountAll({
-      offset: req.query.offset,
-      limit: req.query.limit,
+      where: {status_id: 1},
+      offset: Number(req.query.offset) || 0,
+      limit: Number(req.query.limit) || 10,
     });
 
     res.status(200).json({ statusCode: 200, data: {total: totalUser, result: listUser}});
@@ -48,14 +54,25 @@ exports.getListUser =  async function (req, res, next) {
 
 exports.getDetailUser =  async function (req, res, next) {
   try {
-    return res.status(201).json({ statusCode: 200, data: newUser});
+    console.log("getDetailUser");
+    const user = await User.findByPk(req.user.id, {
+      where: {status_id: 1},
+      attributes: {exclude: ['password']},
+      include: [
+        {
+          model: Status,
+          as: 'status',
+        }
+      ]
+    });
+
+    return res.status(201).json({ statusCode: 200, data: user});
   } catch (error) {
     next(error)
   }
 }
 exports.createUser =  async function (req, res, next) {
   try {
-    validationResult(req)
     const newUser = await User.create(req.body);
 
     res.status(201).json({ statusCode: 200, data: newUser});

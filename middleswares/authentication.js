@@ -1,4 +1,4 @@
-const userModel = require('../models/user');
+const User = require('../models').user;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const secretKey = process.env.SECRETKEY;
@@ -7,13 +7,19 @@ class Middleware {
 
   static async authentication (req, res, next) {
     try {
-      const access_token = req.headers.access_token;
-      if (!access_token) throw { name: "TokenNotFound" };
-  
+      let access_token, auth
+      if(req.headers.authorization){
+        auth = req.headers?.authorization.split("Bearer ");
+        access_token = auth[1]
+      }else if(req.headers.access_token) access_token = req.headers.access_token
+
+      if(!access_token){
+        throw { name: "TokenNotFound" };
+      }
       const payload = jwt.verify(access_token, secretKey);
       if (!payload) throw { name: "JsonWebTokenError" };
       
-      const user = await req.app.settings.db.models.user.findOne({ username: payload.username });
+      const user = await User.findOne({ username: payload.username });
       if (!user) throw { name: "UserNotFound" };
   
       req.user = user;
@@ -27,7 +33,7 @@ class Middleware {
 
   static async validatePassword (req, res, next) {
     try {
-      const user = await req.app.settings.db.models.user.findOne({ username: payload.username });
+      const user = await User.findOne({ username: payload.username });
       if (!user) throw { name: "UserNotFound" };
 
       const pass = req.body.password

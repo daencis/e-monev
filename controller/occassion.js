@@ -3,11 +3,19 @@ const Occassion = require('../models').occassion;
 exports.getListOccassion =  async function (req, res, next) {
     try {
         const {totalOccassion, listOccassion} = await Occassion.findAndCountAll({
-            offset: req.query.offset,
-            limit: req.query.limit,
+            where: {status_id: 1},
+            offset: Number(req.query.offset) || 0,
+            limit: Number(req.query.limit) || 10,
         });
 
-        res.status(200).json({ statusCode: 200, data: {total: totalOccassion, result: listOccassion}});
+        res.status(200).json({
+            statusCode: 200,
+            message: "Pengambilan data berhasil",
+            data: {
+                total: totalOccassion,
+                result: listOccassion
+            }
+        });
     } catch (error) {
       next(error)
     }
@@ -15,9 +23,21 @@ exports.getListOccassion =  async function (req, res, next) {
 
 exports.getDetailOccassion =  async function (req, res, next) {
     try {
-        const occassionDetail = await Occassion.findByPk(req.params.id);
+        const occassionDetail = await Occassion.findByPk(req.params.id,{
+            where: {status_id: 1}
+        });
+
+        if(!occassionDetail){
+            next("NotFound")
+        }
   
-        res.status(200).json({ statusCode: 200, data: {result: occassionDetail}});
+        res.status(200).json({
+            statusCode: 200,
+            message: "Pengambilan data berhasil",
+            data: {
+                result: occassionDetail
+            }
+        });
     } catch (error) {
       next(error)
     }
@@ -26,7 +46,11 @@ exports.createOccassion =  async function (req, res, next) {
     try {
         const occassion = await Occassion.create(req.body);
 
-        res.status(201).json({ statusCode: 200, data: occassion});
+        res.status(201).json({
+            statusCode: 200,
+            message: "Pembuatan data berhasil",
+            data: occassion
+        });
     } catch (err) {
         next(err);
     }
@@ -34,9 +58,20 @@ exports.createOccassion =  async function (req, res, next) {
 
 exports.updateOccassion =  async function (req, res, next) {
     try {
-        const occassion = await Occassion.create(req.body);
+        const occassion = await Occassion.findByPk(req.body.occassion_id);
 
-        res.status(201).json({ statusCode: 200, data: occassion});
+        if(!occassion){
+            next("NotFound")
+        }
+
+        await occassion.update(req.body)
+        await occassion.save()
+
+        res.status(201).json({
+            statusCode: 200,
+            message: "Pengkinian data berhasil",
+            data: occassion
+        });
     } catch (err) {
         next(err); 
     }
@@ -44,9 +79,16 @@ exports.updateOccassion =  async function (req, res, next) {
 
 exports.deleteOccassion =  async function (req, res, next) {
     try {
-        const newUser = await Occassion.create(req.body);
+        const occassion = await Occassion.findByPk(req.body.occassion_id);
 
-        res.status(201).json({ statusCode: 200, data: newUser});
+        if(!occassion){
+            next("NotFound")
+        }
+
+        await occassion.update({status_id: 3})
+        await occassion.save()
+
+        res.status(201).json({ statusCode: 200, message: "Penghapusan data berhasil"});
     } catch (err) {
         next(err); 
     }

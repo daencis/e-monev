@@ -1,8 +1,9 @@
-const router = require('express').Router()
+const app = require('express').Router()
 const controller = require('../../controller/activity');
+const middleware = require('../../middleswares/authentication');
 
-router.get('/list', controller.getListActivity)
+app.get('/list', middleware.authentication, controller.getListActivity)
 
-router.get('/detail/:id', controller.getDetailActivity)
+app.get('/detail/:id', middleware.authentication, controller.getDetailActivity)
 
-module.exports = router
+module.exports = app

@@ -1,11 +1,12 @@
-const routes = require('express').Router()
-
 const getRoutes = require('./get.user')
 const postRoutes = require('./post.user')
 const patchRoutes = require('./patch.user')
 
-routes.use('/', getRoutes)
-routes.use('/', postRoutes)
-routes.use('/', patchRoutes)
+module.exports = (app) => {
+    app.use('/user', getRoutes)
 
-module.exports = routes
+    app.use('/user', postRoutes)
+    
+    app.use('/user', patchRoutes)
+}
+  

@@ -1,7 +1,8 @@
-const router = require('express').Router()
-const controller = require('../../controller/organization')
+const app = require('express').Router();
+const controller = require('../../controller/organization');
+const middleware = require('../../middleswares/authentication');
 
-router.get('/list', controller.getListOrganization)
-router.get('/detail/:id', controller.getDetailOrganization)
+app.get('/list', middleware.authentication, controller.getListOrganization)
+app.get('/detail/:id', middleware.authentication, controller.getDetailOrganization)
 
-module.exports = router
+module.exports = app

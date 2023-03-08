@@ -12,12 +12,17 @@ const app = express({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use('/', require('./routes/index'))
-app.use('/user', require('./routes/user'))
-app.use('/org', require('./routes/organization'))
-app.use('/occasion', require('./routes/occassion'))
-app.use('/program', require('./routes/program'))
-app.use('/activity', require('./routes/activity'))
+
+require('./routes/index')(app)
+require('./routes/user')(app)
+require('./routes/organization')(app)
+require('./routes/occassion')(app)
+require('./routes/program')(app)
+require('./routes/activity')(app)
+app.get('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
 app.use(errorHandler)
 
 app.set('port', port)

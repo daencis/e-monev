@@ -3,11 +3,18 @@ const Purpose = require('../models').purpose;
 exports.getListPurpose =  async function (req, res, next) {
     try {
       const {totalPurpose, listPurpose} = await Purpose.findAndCountAll({
-        offset: req.query.offset,
-        limit: req.query.limit,
+        offset: Number(req.query.offset) || 0,
+        limit: Number(req.query.limit) || 10,
       });
   
-      return res.status(200).json({ statusCode: 200, data: {total: totalPurpose, result: listPurpose}});
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Pengambilan data berhasil",
+        data: {
+          total: totalPurpose,
+          result: listPurpose
+        }
+      });
     } catch (error) {
       next(error)
     }
@@ -16,8 +23,18 @@ exports.getListPurpose =  async function (req, res, next) {
 exports.getDetailPurpose =  async function (req, res, next) {
     try {
       const purposeDetail = await Purpose.findByPk(req.params.id);
-  
-      return res.status(200).json({ statusCode: 200, data: {result: purposeDetail}});
+
+      if(!purposeDetail){
+        next("NotFound")
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Pengambilan data berhasil",
+        data: {
+          result: purposeDetail
+        }
+      });
     } catch (error) {
       next(error)
     }
@@ -26,7 +43,11 @@ exports.createPurpose =  async function (req, res, next) {
   try {
     const newPurpose = await Purpose.create(req.body);
 
-    return res.status(201).json({ statusCode: 200, data: newPurpose});
+    return res.status(201).json({
+      statusCode: 200,
+      message: "Pembuatan data berhasil",
+      data: newPurpose
+    });
   } catch (err) {
     next(err);
   }
@@ -41,8 +62,13 @@ exports.updatePurpose =  async function (req, res, next) {
       }
 
       await purpose.update(req.body)
+      await purpose.save()
 
-      return res.status(201).json({ statusCode: 200, data: newUser});
+      return res.status(201).json({
+        statusCode: 200,
+        message: "Pengkinian data berhasil",
+        data: purpose
+      });
   } catch (err) {
       next(err); 
   }
@@ -50,9 +76,15 @@ exports.updatePurpose =  async function (req, res, next) {
 
 exports.deletePurpose =  async function (req, res, next) {
   try {
-    const newPurpose = await Purpose.findByPk(req.body.purpose_id);
+    const purpose = await Purpose.findByPk(req.body.purpose_id);
 
-    return res.status(201).json({ statusCode: 200, data: newPurpose});
+    if(!purpose){
+      next("NotFound")
+    }
+
+    await purpose.destroy()
+
+    return res.status(201).json({ statusCode: 200, message: "Penghapusan data berhasil"});
   } catch (err) {
     next(err); 
   }
