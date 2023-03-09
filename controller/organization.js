@@ -2,7 +2,7 @@ const Organization = require('../models').organization;
 
 exports.getListOrganization =  async function (req, res, next) {
   try {
-    const {totalOrganization, listOrganization} = await Organization.findAndCountAll({
+    const {count, rows} = await Organization.findAndCountAll({
       where: {status_id: 1},
       offset: Number(req.query.offset) || 0,
       limit: Number(req.query.limit) || 10,
@@ -12,8 +12,8 @@ exports.getListOrganization =  async function (req, res, next) {
       statusCode: 200,
       message: "Pengambilan data berhasil",
       data: {
-        total: totalOrganization,
-        result: listOrganization
+        total: count,
+        result: rows
       }
     });
   } catch (error) {

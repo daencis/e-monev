@@ -2,7 +2,7 @@ const Purpose = require('../models').purpose;
 
 exports.getListPurpose =  async function (req, res, next) {
     try {
-      const {totalPurpose, listPurpose} = await Purpose.findAndCountAll({
+      const {count, rows} = await Purpose.findAndCountAll({
         offset: Number(req.query.offset) || 0,
         limit: Number(req.query.limit) || 10,
       });
@@ -11,8 +11,8 @@ exports.getListPurpose =  async function (req, res, next) {
         statusCode: 200,
         message: "Pengambilan data berhasil",
         data: {
-          total: totalPurpose,
-          result: listPurpose
+          total: count,
+          result: rows
         }
       });
     } catch (error) {

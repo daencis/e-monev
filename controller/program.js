@@ -2,7 +2,7 @@ const Program = require('../models').program;
 
 exports.getListProgram =  async function (req, res, next) {
     try {
-        const {totalProgram, listProgram} = await Program.findAndCountAll({
+        const {count, rows} = await Program.findAndCountAll({
             offset: Number(req.query.offset) || 0,
             limit: Number(req.query.limit) || 10,
         });
@@ -11,8 +11,8 @@ exports.getListProgram =  async function (req, res, next) {
             statusCode: 200,
             message: "Pengambilan data berhasil",
             data: {
-                total: totalProgram,
-                result: listProgram
+                total: count,
+                result: rows
             }
         });
     } catch (error) {

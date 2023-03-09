@@ -2,7 +2,7 @@ const Activity = require('../models').activity;
 
 exports.getListActivity =  async function (req, res, next) {
     try {
-        const {totalActivity, listActivity} = await Activity.findAndCountAll({
+        const {count, rows} = await Activity.findAndCountAll({
             offset: Number(req.query.offset) || 0,
             limit: Number(req.query.limit) || 10,
         });
@@ -11,8 +11,8 @@ exports.getListActivity =  async function (req, res, next) {
             statusCode: 200,
             message: "Pengambilan data berhasil",
             data: {
-                total: totalActivity,
-                result: listActivity
+                total: count,
+                result: rows
             }
         });
     } catch (error) {

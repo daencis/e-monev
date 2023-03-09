@@ -40,13 +40,13 @@ exports.getListUser =  async function (req, res, next) {
     if(req.query.search && req.query.search !== '' && req.query.search !== null){
       search.push()
     }
-    const {totalUser, listUser} = await User.findAndCountAll({
+    const {count, rows} = await User.findAndCountAll({
       where: {status_id: 1},
       offset: Number(req.query.offset) || 0,
       limit: Number(req.query.limit) || 10,
     });
 
-    res.status(200).json({ statusCode: 200, data: {total: totalUser, result: listUser}});
+    res.status(200).json({ statusCode: 200, data: {total: count, result: rows}});
   } catch (error) {
     next(error)
   }

@@ -2,7 +2,7 @@ const Occassion = require('../models').occassion;
 
 exports.getListOccassion =  async function (req, res, next) {
     try {
-        const {totalOccassion, listOccassion} = await Occassion.findAndCountAll({
+        const {count, rows} = await Occassion.findAndCountAll({
             where: {status_id: 1},
             offset: Number(req.query.offset) || 0,
             limit: Number(req.query.limit) || 10,
@@ -12,8 +12,8 @@ exports.getListOccassion =  async function (req, res, next) {
             statusCode: 200,
             message: "Pengambilan data berhasil",
             data: {
-                total: totalOccassion,
-                result: listOccassion
+                total: count,
+                result: rows
             }
         });
     } catch (error) {
