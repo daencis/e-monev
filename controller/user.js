@@ -24,7 +24,7 @@ exports.login =  async function (req, res, next) {
 
     const payload = user.dataValues
     let payloadClient = user
-    delete payloadClient["password"]
+    delete payloadClient.dataValues.password
 
     const access_token = jwt.sign(payload, secretKey)
 
@@ -104,7 +104,8 @@ exports.updateUser =  async function (req, res, next) {
     }
 
     await user.update(req.body)
-    await user.save()
+
+    delete user.dataValues.password
 
     return res.status(201).json({
       statusCode: 200,
