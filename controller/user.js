@@ -106,7 +106,6 @@ exports.updateUser =  async function (req, res, next) {
     await user.update(req.body)
 
     delete user.dataValues.password
-
     return res.status(201).json({
       statusCode: 200,
       message: "Pengkinian data berhasil",
