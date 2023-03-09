@@ -46,7 +46,12 @@ exports.getListUser =  async function (req, res, next) {
       limit: Number(req.query.limit) || 10,
     });
 
-    res.status(200).json({ statusCode: 200, data: {total: count, result: rows}});
+    res.status(200).json({
+      statusCode: 200, 
+      message: "Pengambilan data berhasil",
+      data: {total: count, result: rows
+      }
+    });
   } catch (error) {
     next(error)
   }
@@ -66,7 +71,11 @@ exports.getDetailUser =  async function (req, res, next) {
       ]
     });
 
-    return res.status(201).json({ statusCode: 200, data: user});
+    return res.status(201).json({
+      statusCode: 200,
+      message: "Pengambilan data berhasil",
+      data: user
+    });
   } catch (error) {
     next(error)
   }
@@ -76,7 +85,11 @@ exports.createUser =  async function (req, res, next) {
   try {
     const newUser = await User.create(req.body);
 
-    res.status(201).json({ statusCode: 200, data: newUser});
+    res.status(201).json({
+      statusCode: 200,
+      message: "Pembuatan data berhasil",
+      data: newUser
+    });
   } catch (err) {
     next(err);
   }
@@ -84,9 +97,20 @@ exports.createUser =  async function (req, res, next) {
 
 exports.updateUser =  async function (req, res, next) {
   try {
-    const newUser = await User.create(req.body);
+    const user = await User.findByPk(req.body.user_id);
 
-    return res.status(201).json({ statusCode: 200, data: newUser});
+    if(!user){
+      next("NotFound")
+    }
+
+    await user.update(req.body)
+    await user.save()
+
+    return res.status(201).json({
+      statusCode: 200,
+      message: "Pengkinian data berhasil",
+      data: user
+    });
   } catch (err) {
       next(err); 
   }
@@ -94,9 +118,16 @@ exports.updateUser =  async function (req, res, next) {
 
 exports.deleteUser =  async function (req, res, next) {
   try {
-      const newUser = await User.create(req.body);
+      const user = await User.findByPk(req.body);
 
-      res.status(201).json({ statusCode: 200, data: newUser});
+      if(!user){
+        next("NotFound")
+      }
+  
+      await user.update({status_id: 3})
+      await user.save()
+
+      res.status(201).json({ statusCode: 200,  message: "Penghapusan data berhasil"});
   } catch (err) {
       next(err); 
   }
