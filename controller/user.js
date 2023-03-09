@@ -71,6 +71,7 @@ exports.getDetailUser =  async function (req, res, next) {
     next(error)
   }
 }
+
 exports.createUser =  async function (req, res, next) {
   try {
     const newUser = await User.create(req.body);

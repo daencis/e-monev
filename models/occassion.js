@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const occasion = sequelize.define("occasion", {
+    const occassion = sequelize.define("occassion", {
       id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -55,9 +55,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     })
 
-    occasion.associate = (models) => {
-      occasion.belongsTo(models.status, { foreignKey: 'status_id' })
+    occassion.associate = (models) => {
+      occassion.belongsTo(models.status, { foreignKey: 'status_id' })
     }
   
-    return occasion;
+    return occassion;
 };
