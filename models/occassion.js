@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       code: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           notEmpty: {
             msg: 'Kode harus diisi.'
@@ -21,15 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: {
             msg: 'Judul harus diisi.'
-          }
-        }
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: 'Name harus diisi.'
           }
         }
       },
