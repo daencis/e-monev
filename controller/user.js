@@ -1,5 +1,6 @@
 const User = require('../models').user;
 const Status = require('../models').status;
+const Sequelize = require('sequelize');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRETKEY;
@@ -37,11 +38,28 @@ exports.login =  async function (req, res, next) {
 exports.getListUser =  async function (req, res, next) {
   try {
     const search = []
-    if(req.query.search && req.query.search !== '' && req.query.search !== null){
-      search.push()
+    const selection = [{status_id: 1}]
+    if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
+        search.push({'$id$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
+        search.push({'$title$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('title')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
+        search.push({'$code$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('code')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
     }
+    const filter ={
+        [Sequelize.Op.and]: selection,
+    }
+
+    if(search.length > 0) filter[Sequelize.Op.or] = search
     const {count, rows} = await User.findAndCountAll({
-      where: {status_id: 1},
+      where: filter,
       offset: Number(req.query.offset) || 0,
       limit: Number(req.query.limit) || 10,
     });

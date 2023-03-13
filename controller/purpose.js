@@ -2,7 +2,25 @@ const Purpose = require('../models').purpose;
 
 exports.getListPurpose =  async function (req, res, next) {
     try {
+      const search = []
+      const selection = []
+      if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
+          search.push({'$id$': Sequelize.where(
+              Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
+              `%${req.query.search.toLowerCase()}%`
+          )})
+          search.push({'$title$': Sequelize.where(
+              Sequelize.fn('LOWER', Sequelize.col('title')), 'LIKE',
+              `%${req.query.search.toLowerCase()}%`
+          )})
+      }
+      const filter ={
+          [Sequelize.Op.and]: selection,
+      }
+
+      if(search.length > 0) filter[Sequelize.Op.or] = search
       const {count, rows} = await Purpose.findAndCountAll({
+        where: filter,
         offset: Number(req.query.offset) || 0,
         limit: Number(req.query.limit) || 10,
       });

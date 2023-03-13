@@ -31,6 +31,9 @@ const errorHandler = (err, req, res, next) => {
         case "Forbidden":
             res.status(403).json({ statusCode: 400, message: "Akses tidak diperbolehkan"})
             break;
+        case "SequelizeUniqueConstraintError":
+            res.status(403).json({ statusCode: 400, message: "Input data harus unik"})
+            break;
         default:
             res.status(500).json({ statusCode: 400, message: "Internal server error" })
             break;
