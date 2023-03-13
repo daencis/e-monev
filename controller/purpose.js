@@ -1,4 +1,5 @@
 const Purpose = require('../models').purpose;
+const Sequelize = require('sequelize');
 
 exports.getListPurpose =  async function (req, res, next) {
     try {

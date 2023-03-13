@@ -44,12 +44,12 @@ exports.getListUser =  async function (req, res, next) {
             Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
             `%${req.query.search.toLowerCase()}%`
         )})
-        search.push({'$title$': Sequelize.where(
-            Sequelize.fn('LOWER', Sequelize.col('title')), 'LIKE',
+        search.push({'$username$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('username')), 'LIKE',
             `%${req.query.search.toLowerCase()}%`
         )})
-        search.push({'$code$': Sequelize.where(
-            Sequelize.fn('LOWER', Sequelize.col('code')), 'LIKE',
+        search.push({'$name$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE',
             `%${req.query.search.toLowerCase()}%`
         )})
     }
