@@ -3,6 +3,9 @@ const Sequelize = require('sequelize');
 
 exports.getListPurpose =  async function (req, res, next) {
     try {
+      const limit = (req.query.limit) ? Number(req.query.limit) : 10
+      const page = (req.query.page) ? Number(req.query.page) : 1
+
       const search = []
       const selection = []
       if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
@@ -22,8 +25,8 @@ exports.getListPurpose =  async function (req, res, next) {
       if(search.length > 0) filter[Sequelize.Op.or] = search
       const {count, rows} = await Purpose.findAndCountAll({
         where: filter,
-        offset: Number(req.query.offset) || 0,
-        limit: Number(req.query.limit) || 10,
+        offset: (page - 1) * limit,
+        limit: limit
       });
   
       return res.status(200).json({
@@ -31,6 +34,8 @@ exports.getListPurpose =  async function (req, res, next) {
         message: "Pengambilan data berhasil",
         data: {
           total: count,
+          page: page,
+          pages: (count == 0) ? 1 : Math.ceil(count / limit),
           result: rows
         }
       });

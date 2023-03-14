@@ -3,6 +3,9 @@ const Sequelize = require('sequelize');
 
 exports.getListOccassion =  async function (req, res, next) {
     try {
+        const limit = (req.query.limit) ? Number(req.query.limit) : 10
+        const page = (req.query.page) ? Number(req.query.page) : 1
+
         const search = []
         const selection = [{status_id: 1}]
         if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
@@ -27,8 +30,8 @@ exports.getListOccassion =  async function (req, res, next) {
         
         const {count, rows} = await Occassion.findAndCountAll({
             where: filter,
-            offset: Number(req.query.offset) || 0,
-            limit: Number(req.query.limit) || 10,
+            offset: (page - 1) * limit,
+            limit: limit
         });
 
         res.status(200).json({
@@ -36,6 +39,8 @@ exports.getListOccassion =  async function (req, res, next) {
             message: "Pengambilan data berhasil",
             data: {
                 total: count,
+                page: page,
+                pages: (count == 0) ? 1 : Math.ceil(count / limit),
                 result: rows
             }
         });
