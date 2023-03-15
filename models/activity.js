@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         references: {
             model: 'program',
             key: 'id'
-        }
+        },
+        defaultValue: null
       },
       created_at: {
         type: DataTypes.DATE,

@@ -1,5 +1,6 @@
 const User = require('../models').user;
 const Status = require('../models').status;
+const Sequelize = require('sequelize');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRETKEY;
@@ -15,11 +16,9 @@ exports.login =  async function (req, res, next) {
         username: username
       }
     })
-
     if (!user) throw { name: 'UserNotFound' }
     
     const validate = bcrypt.compareSync(req.body.password, user.password)
-
     if (!validate) throw { name: 'InvalidCredentials' }
 
     const payload = user.dataValues
@@ -36,20 +35,55 @@ exports.login =  async function (req, res, next) {
 
 exports.getListUser =  async function (req, res, next) {
   try {
+    const limit = (req.query.limit) ? Number(req.query.limit) : 10
+    const page = (req.query.page) ? Number(req.query.page) : 1
     const search = []
-    if(req.query.search && req.query.search !== '' && req.query.search !== null){
-      search.push()
+    const selection = [{status_id: 1}]
+    if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
+        search.push({'$id$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
+        search.push({'$username$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('username')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
+        search.push({'$name$': Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE',
+            `%${req.query.search.toLowerCase()}%`
+        )})
     }
+    let sort = []
+    if(req.query.sort == 'terbaru'){
+      sort.push(['id', 'DESC'])
+    } else if(req.query.sort == 'terlama'){
+        sort.push(['id', 'ASC'])
+    } else if(req.query.sort == 'a-z'){
+        sort.push(['username', 'ASC'])
+    } else if(req.query.sort == 'z-a'){
+        sort.push(['username', 'DESC'])
+    } else {
+      sort.push(['id', 'DESC'])
+    }
+    const filter ={
+        [Sequelize.Op.and]: selection,
+    }
+    if(search.length > 0) filter[Sequelize.Op.or] = search
     const {count, rows} = await User.findAndCountAll({
-      where: {status_id: 1},
-      offset: Number(req.query.offset) || 0,
-      limit: Number(req.query.limit) || 10,
+      where: filter,
+      offset: (page - 1) * limit,
+      limit: limit,
+      order: sort,
     });
 
     res.status(200).json({
       statusCode: 200, 
       message: "Pengambilan data berhasil",
-      data: {total: count, result: rows
+      data: {
+        total: count,
+        page: page,
+        pages: (count == 0) ? 1 : Math.ceil(count / limit),
+        result: rows
       }
     });
   } catch (error) {
@@ -59,7 +93,6 @@ exports.getListUser =  async function (req, res, next) {
 
 exports.getDetailUser =  async function (req, res, next) {
   try {
-    console.log("getDetailUser");
     const user = await User.findByPk(req.user.id, {
       where: {status_id: 1},
       attributes: {exclude: ['password']},
@@ -100,7 +133,7 @@ exports.updateUser =  async function (req, res, next) {
     const user = await User.findByPk(req.body.user_id);
 
     if(!user){
-      next("NotFound")
+      next({name: "NotFound"})
     }
 
     await user.update(req.body)
@@ -121,7 +154,7 @@ exports.deleteUser =  async function (req, res, next) {
       const user = await User.findByPk(req.body);
 
       if(!user){
-        next("NotFound")
+        next({name: "NotFound"})
       }
   
       await user.update({status_id: 3})

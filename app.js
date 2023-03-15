@@ -18,8 +18,17 @@ require('./routes/user')(app)
 require('./routes/organization')(app)
 require('./routes/occassion')(app)
 require('./routes/program')(app)
+require('./routes/purpose')(app)
 require('./routes/activity')(app)
 app.get('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
+app.patch('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
+app.post('*', (req, res) => res.status(404).send({
   status: false,
   message: 'Api tidak ditemukan.'
 }))

@@ -1,10 +1,43 @@
 const Purpose = require('../models').purpose;
+const Sequelize = require('sequelize');
 
 exports.getListPurpose =  async function (req, res, next) {
     try {
+      const limit = (req.query.limit) ? Number(req.query.limit) : 10
+      const page = (req.query.page) ? Number(req.query.page) : 1
+
+      const search = []
+      const selection = []
+      if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
+          search.push({'$id$': Sequelize.where(
+              Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
+              `%${req.query.search.toLowerCase()}%`
+          )})
+          search.push({'$title$': Sequelize.where(
+              Sequelize.fn('LOWER', Sequelize.col('title')), 'LIKE',
+              `%${req.query.search.toLowerCase()}%`
+          )})
+      }
+      let sort = []
+      if(req.query.sort == 'terbaru'){
+        sort.push(['id', 'DESC'])
+      } else if(req.query.sort == 'terlama'){
+          sort.push(['id', 'ASC'])
+      } else if(req.query.sort == 'a-z'){
+          sort.push(['title', 'ASC'])
+      } else if(req.query.sort == 'z-a'){
+          sort.push(['title', 'DESC'])
+      }
+      const filter ={
+          [Sequelize.Op.and]: selection,
+      }
+
+      if(search.length > 0) filter[Sequelize.Op.or] = search
       const {count, rows} = await Purpose.findAndCountAll({
-        offset: Number(req.query.offset) || 0,
-        limit: Number(req.query.limit) || 10,
+        where: filter,
+        offset: (page - 1) * limit,
+        limit: limit,
+        order: sort,
       });
   
       return res.status(200).json({
@@ -12,6 +45,8 @@ exports.getListPurpose =  async function (req, res, next) {
         message: "Pengambilan data berhasil",
         data: {
           total: count,
+          page: page,
+          pages: (count == 0) ? 1 : Math.ceil(count / limit),
           result: rows
         }
       });
@@ -25,7 +60,7 @@ exports.getDetailPurpose =  async function (req, res, next) {
       const purposeDetail = await Purpose.findByPk(req.params.id);
 
       if(!purposeDetail){
-        next("NotFound")
+        next({name: "NotFound"})
       }
 
       return res.status(200).json({
@@ -58,7 +93,7 @@ exports.updatePurpose =  async function (req, res, next) {
       const purpose = await Purpose.findByPk(req.body.purpose_id);
 
       if(!purpose){
-        next("NotFound")
+        next({name: "NotFound"})
       }
 
       await purpose.update(req.body)
@@ -79,7 +114,7 @@ exports.deletePurpose =  async function (req, res, next) {
     const purpose = await Purpose.findByPk(req.body.purpose_id);
 
     if(!purpose){
-      next("NotFound")
+      next({name: "NotFound"})
     }
 
     await purpose.destroy()
