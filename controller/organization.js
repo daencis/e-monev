@@ -22,6 +22,17 @@ exports.getListOrganization =  async function (req, res, next) {
             `%${req.query.search.toLowerCase()}%`
         )})
     }
+    let sort = []
+    if(req.query.sort == 'terbaru'){
+      sort.push(['id', 'DESC'])
+    } else if(req.query.sort == 'terlama'){
+        sort.push(['id', 'ASC'])
+    } else if(req.query.sort == 'a-z'){
+        sort.push(['title', 'ASC'])
+    } else if(req.query.sort == 'z-a'){
+        sort.push(['title', 'DESC'])
+    }
+
     const filter ={
         [Sequelize.Op.and]: selection,
     }
@@ -31,7 +42,8 @@ exports.getListOrganization =  async function (req, res, next) {
     const {count, rows} = await Organization.findAndCountAll({
       where: filter,
       offset: (page - 1) * limit,
-      limit: limit
+      limit: limit,
+      order: sort,
     });
 
     res.status(200).json({
@@ -55,8 +67,8 @@ exports.getDetailOrganization =  async function (req, res, next) {
       where: {status_id: 1}
     });
 
-    if(!organization){
-      next("NotFound")
+    if(!organizationDetail){
+      next({name: "NotFound"})
     }
   
     res.status(200).json({
@@ -70,6 +82,7 @@ exports.getDetailOrganization =  async function (req, res, next) {
     next(error)
   }
 }
+
 exports.createOrganization =  async function (req, res, next) {
   try {
     const newOrganization = await Organization.create(req.body);
@@ -86,11 +99,14 @@ exports.createOrganization =  async function (req, res, next) {
 
 exports.updateOrganization =  async function (req, res, next) {
   try {
-    const organization = await Organization.create(req.body);
+    const organization = await Organization.findByPk(req.body.organization_id);
 
     if(!organization){
-      next("NotFound")
+      next({name: "NotFound"})
     }
+
+    await organization.update(req.body)
+    await organization.save()
 
     res.status(201).json({
       statusCode: 200,
@@ -104,10 +120,10 @@ exports.updateOrganization =  async function (req, res, next) {
 
 exports.deleteOrganization =  async function (req, res, next) {
   try {
-    const organization = await req.app.settings.db.models.organization.create(req.body);
+    const organization = await Organization.findByPk(req.body.organization_id);
 
     if(!organization){
-      next("NotFound")
+      next({name: "NotFound"})
     }
 
     await organization.update({status_id: 3})

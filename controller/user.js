@@ -16,11 +16,9 @@ exports.login =  async function (req, res, next) {
         username: username
       }
     })
-
     if (!user) throw { name: 'UserNotFound' }
     
     const validate = bcrypt.compareSync(req.body.password, user.password)
-
     if (!validate) throw { name: 'InvalidCredentials' }
 
     const payload = user.dataValues
@@ -55,15 +53,27 @@ exports.getListUser =  async function (req, res, next) {
             `%${req.query.search.toLowerCase()}%`
         )})
     }
+    let sort = []
+    if(req.query.sort == 'terbaru'){
+      sort.push(['id', 'DESC'])
+    } else if(req.query.sort == 'terlama'){
+        sort.push(['id', 'ASC'])
+    } else if(req.query.sort == 'a-z'){
+        sort.push(['username', 'ASC'])
+    } else if(req.query.sort == 'z-a'){
+        sort.push(['username', 'DESC'])
+    } else {
+      sort.push(['id', 'DESC'])
+    }
     const filter ={
         [Sequelize.Op.and]: selection,
     }
-
     if(search.length > 0) filter[Sequelize.Op.or] = search
     const {count, rows} = await User.findAndCountAll({
       where: filter,
       offset: (page - 1) * limit,
-      limit: limit
+      limit: limit,
+      order: sort,
     });
 
     res.status(200).json({
@@ -83,7 +93,6 @@ exports.getListUser =  async function (req, res, next) {
 
 exports.getDetailUser =  async function (req, res, next) {
   try {
-    console.log("getDetailUser");
     const user = await User.findByPk(req.user.id, {
       where: {status_id: 1},
       attributes: {exclude: ['password']},
@@ -124,7 +133,7 @@ exports.updateUser =  async function (req, res, next) {
     const user = await User.findByPk(req.body.user_id);
 
     if(!user){
-      next("NotFound")
+      next({name: "NotFound"})
     }
 
     await user.update(req.body)
@@ -146,7 +155,7 @@ exports.deleteUser =  async function (req, res, next) {
       const user = await User.findByPk(req.body);
 
       if(!user){
-        next("NotFound")
+        next({name: "NotFound"})
       }
   
       await user.update({status_id: 3})

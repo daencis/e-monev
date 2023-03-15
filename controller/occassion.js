@@ -22,16 +22,26 @@ exports.getListOccassion =  async function (req, res, next) {
                 `%${req.query.search.toLowerCase()}%`
             )})
         }
+        let sort = []
+        if(req.query.sort == 'terbaru'){
+            sort.push(['id', 'DESC'])
+        } else if(req.query.sort == 'terlama'){
+            sort.push(['id', 'ASC'])
+        } else if(req.query.sort == 'a-z'){
+            sort.push(['title', 'ASC'])
+        } else if(req.query.sort == 'z-a'){
+            sort.push(['title', 'DESC'])
+        }
         const filter ={
             [Sequelize.Op.and]: selection,
         }
-
         if(search.length > 0) filter[Sequelize.Op.or] = search
         
         const {count, rows} = await Occassion.findAndCountAll({
             where: filter,
             offset: (page - 1) * limit,
-            limit: limit
+            limit: limit,
+            order: sort,
         });
 
         res.status(200).json({
@@ -56,7 +66,7 @@ exports.getDetailOccassion =  async function (req, res, next) {
         });
 
         if(!occassionDetail){
-            next("NotFound")
+            next({name: "NotFound"})
         }
   
         res.status(200).json({
@@ -89,7 +99,7 @@ exports.updateOccassion =  async function (req, res, next) {
         const occassion = await Occassion.findByPk(req.body.occassion_id);
 
         if(!occassion){
-            next("NotFound")
+            next({name: "NotFound"})
         }
 
         await occassion.update(req.body)
@@ -110,7 +120,7 @@ exports.deleteOccassion =  async function (req, res, next) {
         const occassion = await Occassion.findByPk(req.body.occassion_id);
 
         if(!occassion){
-            next("NotFound")
+            next({name: "NotFound"})
         }
 
         await occassion.update({status_id: 3})

@@ -22,6 +22,16 @@ exports.getListActivity =  async function (req, res, next) {
                 `%${req.query.search.toLowerCase()}%`
             )})
         }
+        let sort
+        if(req.query.sort == 'terbaru'){
+            sort = []
+        } else if(req.query.sort == 'terlama'){
+            sort = []
+        } else if(req.query.sort == 'a-z'){
+            sort = []
+        } else if(req.query.sort == 'z-a'){
+            sort = []
+        }
         const filter ={
             [Sequelize.Op.and]: selection,
         }
@@ -73,8 +83,6 @@ exports.createActivity =  async function (req, res, next) {
             data: newactivity
         });
     } catch (err) {
-        console.log(err.name);
-        console.log(err);
         next(err); 
     }
 }
@@ -84,7 +92,7 @@ exports.updateActivity =  async function (req, res, next) {
         const activity = await Activity.create(req.body);
 
         if(!activity){
-            next("NotFound")
+            next({name: "NotFound"})
         }
       
         await activity.update(req.body)
@@ -105,7 +113,7 @@ exports.deleteActivity =  async function (req, res, next) {
         const activity = await Activity.findByPk(req.body.activity_id);
 
         if(!activity){
-            next("NotFound")
+            next({name: "NotFound"})
           }
       
         await activity.destroy()

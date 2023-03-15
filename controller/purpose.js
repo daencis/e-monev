@@ -18,6 +18,16 @@ exports.getListPurpose =  async function (req, res, next) {
               `%${req.query.search.toLowerCase()}%`
           )})
       }
+      let sort = []
+      if(req.query.sort == 'terbaru'){
+        sort.push(['id', 'DESC'])
+      } else if(req.query.sort == 'terlama'){
+          sort.push(['id', 'ASC'])
+      } else if(req.query.sort == 'a-z'){
+          sort.push(['title', 'ASC'])
+      } else if(req.query.sort == 'z-a'){
+          sort.push(['title', 'DESC'])
+      }
       const filter ={
           [Sequelize.Op.and]: selection,
       }
@@ -26,7 +36,8 @@ exports.getListPurpose =  async function (req, res, next) {
       const {count, rows} = await Purpose.findAndCountAll({
         where: filter,
         offset: (page - 1) * limit,
-        limit: limit
+        limit: limit,
+        order: sort,
       });
   
       return res.status(200).json({
@@ -49,7 +60,7 @@ exports.getDetailPurpose =  async function (req, res, next) {
       const purposeDetail = await Purpose.findByPk(req.params.id);
 
       if(!purposeDetail){
-        next("NotFound")
+        next({name: "NotFound"})
       }
 
       return res.status(200).json({
@@ -82,7 +93,7 @@ exports.updatePurpose =  async function (req, res, next) {
       const purpose = await Purpose.findByPk(req.body.purpose_id);
 
       if(!purpose){
-        next("NotFound")
+        next({name: "NotFound"})
       }
 
       await purpose.update(req.body)
@@ -103,7 +114,7 @@ exports.deletePurpose =  async function (req, res, next) {
     const purpose = await Purpose.findByPk(req.body.purpose_id);
 
     if(!purpose){
-      next("NotFound")
+      next({name: "NotFound"})
     }
 
     await purpose.destroy()

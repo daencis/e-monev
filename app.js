@@ -24,6 +24,14 @@ app.get('*', (req, res) => res.status(404).send({
   status: false,
   message: 'Api tidak ditemukan.'
 }))
+app.patch('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
+app.post('*', (req, res) => res.status(404).send({
+  status: false,
+  message: 'Api tidak ditemukan.'
+}))
 app.use(errorHandler)
 
 app.set('port', port)
