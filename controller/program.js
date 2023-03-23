@@ -66,7 +66,7 @@ exports.getDetailProgram =  async function (req, res, next) {
         const programDetail = await Program.findByPk(req.params.id, {where: {status_id: 1}});
 
         if(!programDetail){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
 
         res.status(200).json({
@@ -99,7 +99,7 @@ exports.updateProgram =  async function (req, res, next) {
         const program = await Program.findByPk(req.body.program_id);
 
         if(!program){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
     
         await program.update(req.body)
@@ -120,7 +120,7 @@ exports.deleteProgram =  async function (req, res, next) {
         const program = await Program.findByPk(req.body.program_id);
 
         if(!program){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
 
         await program.update({status_id: 3})

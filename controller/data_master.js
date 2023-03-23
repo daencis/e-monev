@@ -12,15 +12,11 @@ exports.getListDataMaster =  async function (req, res, next) {
         const selection = []
         if(req.query.search && req.query.search !== null && req.query.search !== undefined && req.query.search !== ''){
             search.push({'$id$': Sequelize.where(
-                Sequelize.fn('LOWER', Sequelize.col('id')), 'LIKE',
+                Sequelize.fn('LOWER', Sequelize.col('data_master.id')), 'LIKE',
                 `%${req.query.search.toLowerCase()}%`
             )})
-            search.push({'$title$': Sequelize.where(
-                Sequelize.fn('LOWER', Sequelize.col('title')), 'LIKE',
-                `%${req.query.search.toLowerCase()}%`
-            )})
-            search.push({'$code$': Sequelize.where(
-                Sequelize.fn('LOWER', Sequelize.col('code')), 'LIKE',
+            search.push({'$description$': Sequelize.where(
+                Sequelize.fn('LOWER', Sequelize.col('description')), 'LIKE',
                 `%${req.query.search.toLowerCase()}%`
             )})
         }
@@ -110,7 +106,7 @@ exports.getDetailDataMaster =  async function (req, res, next) {
         });
 
         if(!DataMasterDetail){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
 
         res.status(200).json({
@@ -161,7 +157,7 @@ exports.updateDataMaster =  async function (req, res, next) {
 
         if(!dataMaster){
             await transaction.rollback()
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
     
         await dataMaster.update(req.body, transaction)
@@ -196,20 +192,25 @@ exports.updateDataMaster =  async function (req, res, next) {
 }
 
 exports.deleteDataMaster =  async function (req, res, next) {
+    const transaction = await DB.sequelize.transaction()
     try {
         const dataMaster = await Data_master.findByPk(req.body.data_master_id);
 
         if(!dataMaster){
-            next({name: "NotFound"})
+            await transaction.rollback()
+            return next({name: "NotFound"})
         }
 
-        await dataMaster.destroy()
+        await Models.master_occassion.destroy({where: {data_master_id: dataMaster.id}}, transaction)
+        await dataMaster.destroy(transaction)
+        await transaction.commit()
 
         res.status(200).json({
             statusCode: 200,
             message: "Penghapusan data berhasil",
         });
     } catch (err) {
+        await transaction.rollback()
         next(err); 
     }
 }
