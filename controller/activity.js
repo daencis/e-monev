@@ -89,7 +89,7 @@ exports.createActivity =  async function (req, res, next) {
 
 exports.updateActivity =  async function (req, res, next) {
     try {
-        const activity = await Activity.create(req.body);
+        const activity = await Activity.findByPk(req.body.activity_id);
 
         if(!activity){
             next({name: "NotFound"})
