@@ -68,7 +68,7 @@ exports.getDetailOrganization =  async function (req, res, next) {
     });
 
     if(!organizationDetail){
-      next({name: "NotFound"})
+      return next({name: "NotFound"})
     }
   
     res.status(200).json({
@@ -102,7 +102,7 @@ exports.updateOrganization =  async function (req, res, next) {
     const organization = await Organization.findByPk(req.body.organization_id);
 
     if(!organization){
-      next({name: "NotFound"})
+      return next({name: "NotFound"})
     }
 
     await organization.update(req.body)
@@ -123,7 +123,7 @@ exports.deleteOrganization =  async function (req, res, next) {
     const organization = await Organization.findByPk(req.body.organization_id);
 
     if(!organization){
-      next({name: "NotFound"})
+      return next({name: "NotFound"})
     }
 
     await organization.update({status_id: 3})

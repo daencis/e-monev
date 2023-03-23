@@ -20,6 +20,8 @@ require('./routes/occassion')(app)
 require('./routes/program')(app)
 require('./routes/purpose')(app)
 require('./routes/activity')(app)
+require('./routes/data_master')(app)
+require('./routes/data_report')(app)
 app.get('*', (req, res) => res.status(404).send({
   status: false,
   message: 'Api tidak ditemukan.'

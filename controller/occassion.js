@@ -66,7 +66,7 @@ exports.getDetailOccassion =  async function (req, res, next) {
         });
 
         if(!occassionDetail){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
   
         res.status(200).json({
@@ -99,7 +99,7 @@ exports.updateOccassion =  async function (req, res, next) {
         const occassion = await Occassion.findByPk(req.body.occassion_id);
 
         if(!occassion){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
 
         await occassion.update(req.body)
@@ -120,7 +120,7 @@ exports.deleteOccassion =  async function (req, res, next) {
         const occassion = await Occassion.findByPk(req.body.occassion_id);
 
         if(!occassion){
-            next({name: "NotFound"})
+            return next({name: "NotFound"})
         }
 
         await occassion.update({status_id: 3})
