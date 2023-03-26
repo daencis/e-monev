@@ -1,6 +1,12 @@
 const Activity = require('../models').activity;
 const Sequelize = require('sequelize');
 
+const generateCode = (id) => {
+    const date = new Date();
+    const code = `A${date.getMilliseconds()}${date.getDate()}${date.getMonth()}${id}`
+    return code
+}
+
 exports.getListActivity =  async function (req, res, next) {
     try {
         const limit = (req.query.limit) ? Number(req.query.limit) : 10
@@ -75,6 +81,9 @@ exports.getDetailActivity =  async function (req, res, next) {
 
 exports.createActivity =  async function (req, res, next) {
     try {
+        //generate code
+        const activities = await Activity.count()
+        req.body.code = generateCode(activities)
         const newactivity = await Activity.create(req.body);
 
         res.status(201).json({

@@ -1,6 +1,12 @@
 const Occassion = require('../models').occassion;
 const Sequelize = require('sequelize');
 
+const generateCode = (id) => {
+    const date = new Date();
+    const code = `O${date.getMilliseconds()}${date.getDate()}${date.getMonth()}${id}`
+    return code
+}
+
 exports.getListOccassion =  async function (req, res, next) {
     try {
         const limit = (req.query.limit) ? Number(req.query.limit) : 10
@@ -80,8 +86,12 @@ exports.getDetailOccassion =  async function (req, res, next) {
       next(error)
     }
 }
+
 exports.createOccassion =  async function (req, res, next) {
     try {
+        //generate code
+        const occassions = await Occassion.count()
+        req.body.code = generateCode(occassions)
         const occassion = await Occassion.create(req.body);
 
         res.status(201).json({

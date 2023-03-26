@@ -116,6 +116,9 @@ exports.getDetailUser =  async function (req, res, next) {
 
 exports.createUser =  async function (req, res, next) {
   try {
+    if(!req.body.status_id) req.body.status_id = 1
+    if(!req.body.admin_role_id) req.body.admin_role_id = 2
+    
     const newUser = await User.create(req.body);
 
     res.status(201).json({

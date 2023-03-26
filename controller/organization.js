@@ -1,6 +1,12 @@
 const Organization = require('../models').organization;
 const Sequelize = require('sequelize');
 
+const generateCode = (id) => {
+  const date = new Date();
+  const code = `Org${date.getMilliseconds()}${date.getDate()}${date.getMonth()}${id}`
+  return code
+}
+
 exports.getListOrganization =  async function (req, res, next) {
   try {
     const limit = (req.query.limit) ? Number(req.query.limit) : 10
@@ -85,6 +91,10 @@ exports.getDetailOrganization =  async function (req, res, next) {
 
 exports.createOrganization =  async function (req, res, next) {
   try {
+    //generate code
+    const organizations = await Organization.count()
+    req.body.code = generateCode(organizations)
+
     const newOrganization = await Organization.create(req.body);
 
     res.status(201).json({

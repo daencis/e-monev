@@ -1,6 +1,12 @@
 const Program = require('../models').program;
 const Sequelize = require('sequelize');
 
+const generateCode = (id) => {
+    const date = new Date();
+    const code = `P${date.getMilliseconds()}${date.getDate()}${date.getMonth()}${id}`
+    return code
+}
+
 exports.getListProgram =  async function (req, res, next) {
     try {
         const limit = (req.query.limit) ? Number(req.query.limit) : 10
@@ -80,8 +86,13 @@ exports.getDetailProgram =  async function (req, res, next) {
       next(error)
     }
 }
+
 exports.createProgram =  async function (req, res, next) {
     try {
+        //generate code
+        const programs = await Program.count()
+        req.body.code = generateCode(programs)
+
         const newProgram = await Program.create(req.body);
 
         res.status(201).json({
