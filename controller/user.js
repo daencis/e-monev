@@ -1,5 +1,5 @@
 const User = require('../models').user;
-const Status = require('../models').status;
+const Models = require('../models');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRETKEY;
@@ -59,14 +59,17 @@ exports.getListUser =  async function (req, res, next) {
 
 exports.getDetailUser =  async function (req, res, next) {
   try {
-    console.log("getDetailUser");
     const user = await User.findByPk(req.user.id, {
       where: {status_id: 1},
       attributes: {exclude: ['password']},
       include: [
         {
-          model: Status,
+          model: Models.status,
           as: 'status',
+        },
+        {
+          model: Models.admin_role,
+          as: 'admin_role',
         }
       ]
     });
