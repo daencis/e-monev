@@ -19,7 +19,7 @@ class Middleware {
       const payload = jwt.verify(access_token, secretKey);
       if (!payload) throw { name: "JsonWebTokenError" };
       
-      const user = await User.findOne({ username: payload.username });
+      const user = await User.findByPk(payload.id);
       if (!user) throw { name: "UserNotFound" };
   
       req.user = user;

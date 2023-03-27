@@ -25,6 +25,15 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
+      status_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'status',
+            key: 'id'
+        },
+        defaultValue: 1
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -38,6 +47,9 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW
       }
     })
-  
+    
+    program.associate = (models) => {
+      program.belongsTo(models.status, { foreignKey: 'status_id' })
+    }
     return program;
 };
