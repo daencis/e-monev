@@ -1,5 +1,6 @@
 const User = require('../models').user;
 const Status = require('../models').status;
+const Models = require('../models');
 const Sequelize = require('sequelize');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -71,6 +72,10 @@ exports.getListUser =  async function (req, res, next) {
     if(search.length > 0) filter[Sequelize.Op.or] = search
     const {count, rows} = await User.findAndCountAll({
       where: filter,
+      include: [
+        {model: Status, as: 'status'},
+        {model: Models.organization, as: 'organization'}
+      ],
       offset: (page - 1) * limit,
       limit: limit,
       order: sort,
@@ -97,42 +102,9 @@ exports.getDetailUser =  async function (req, res, next) {
       where: {status_id: 1},
       attributes: {exclude: ['password']},
       include: [
-        {
-          model: Models.status,
-          as: 'status',
-        },
-        {
-          model: Models.admin_role,
-          as: 'admin_role',
-        }
-      ]
-    });
-
-    return res.status(201).json({
-      statusCode: 200,
-      message: "Pengambilan data berhasil",
-      data: user
-    });
-  } catch (error) {
-    next(error)
-  }
-}
-
-exports.getUserDetail =  async function (req, res, next) {
-  try {
-    const user = await User.findByPk(req.params.id, {
-      where: {status_id: 1},
-      attributes: {exclude: ['password']},
-      include: [
-        {
-          model: Models.status,
-          as: 'status',
-        },
-        {
-          model: Models.admin_role,
-          as: 'admin_role',
-        }
-      ]
+        {model: Status, as: 'status'},
+        {model: Models.organization, as: 'organization'}
+      ],
     });
 
     return res.status(201).json({
