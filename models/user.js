@@ -78,9 +78,9 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   user.addHook('beforeUpdate', async user => {
-    if (user.password){
-        const salt = await bcrypt.genSalt(8);
-        return user.password = await bcrypt.hash(user.password, salt);
+    if (user.dataValues.password !== user._previousDataValues.password){
+      const salt = await bcrypt.genSalt(8);
+      return user.password = await bcrypt.hash(user.password, salt);
     }
   })
 

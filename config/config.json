@@ -21,10 +21,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "production",
-    "password": null,
-    "database": "emonev_production",
-    "host": "127.0.0.1",
+    "username": "parkirja_emonevapi",
+    "password": "sunshine45@",
+    "database": "parkirja_emonev",
+    "host": "localhost",
     "dialect": "mysql",
     "define": {
       "id": false,
