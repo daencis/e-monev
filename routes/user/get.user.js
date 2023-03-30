@@ -6,6 +6,6 @@ app.get('/profile', middleware.authentication, controller.getDetailUser)
 
 app.get('/list', middleware.authentication, controller.getListUser)
 
-app.get('/detail/:id', middleware.authentication, controller.getDetailUser)
+app.get('/detail/:id', middleware.authentication, controller.getUserDetail)
 
 module.exports = app

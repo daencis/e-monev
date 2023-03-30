@@ -118,6 +118,33 @@ exports.getDetailUser =  async function (req, res, next) {
   }
 }
 
+exports.getUserDetail =  async function (req, res, next) {
+  try {
+    const user = await User.findByPk(req.params.id, {
+      where: {status_id: 1},
+      attributes: {exclude: ['password']},
+      include: [
+        {
+          model: Models.status,
+          as: 'status',
+        },
+        {
+          model: Models.admin_role,
+          as: 'admin_role',
+        }
+      ]
+    });
+
+    return res.status(201).json({
+      statusCode: 200,
+      message: "Pengambilan data berhasil",
+      data: user
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
 exports.createUser =  async function (req, res, next) {
   try {
     if(!req.body.status_id) req.body.status_id = 1
