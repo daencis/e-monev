@@ -2,7 +2,7 @@
   "development": {
       "name":"emonev",
       "username": "root",
-      "password": "MYSQLdefault",
+      "password": "root",
       "database": "emonev_dev",
       "host": "127.0.0.1",
       "dialect": "mysql",
@@ -21,9 +21,9 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "parkirja_emonevapi",
-    "password": "sunshine45@",
-    "database": "parkirja_emonev",
+    "username": "root",
+    "password": "root",
+    "database": "emonev_dev",
     "host": "localhost",
     "dialect": "mysql",
     "define": {

@@ -28,15 +28,15 @@ exports.getListActivity =  async function (req, res, next) {
                 `%${req.query.search.toLowerCase()}%`
             )})
         }
-        let sort
+        let sort = []
         if(req.query.sort == 'terbaru'){
-            sort = []
+            sort.push(['id', 'DESC'])
         } else if(req.query.sort == 'terlama'){
-            sort = []
+            sort.push(['id', 'ASC'])
         } else if(req.query.sort == 'a-z'){
-            sort = []
+            sort.push(['title', 'ASC'])
         } else if(req.query.sort == 'z-a'){
-            sort = []
+            sort.push(['title', 'DESC'])
         }
         const filter ={
             [Sequelize.Op.and]: selection,
@@ -44,6 +44,7 @@ exports.getListActivity =  async function (req, res, next) {
         if(search.length > 0) filter[Sequelize.Op.or] = search
         const {count, rows} = await Activity.findAndCountAll({
             where: filter,
+            order: sort,
             offset: (page - 1) * limit,
             limit: limit
         });
