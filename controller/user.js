@@ -157,7 +157,7 @@ exports.updateUser =  async function (req, res, next) {
 
 exports.deleteUser =  async function (req, res, next) {
   try {
-      const user = await User.findByPk(req.body);
+      const user = await User.findByPk(req.body.user_id);
 
       if(!user){
         next({name: "NotFound"})

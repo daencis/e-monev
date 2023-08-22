@@ -2,6 +2,7 @@ require("dotenv").config();
 const http = require('http')
 const express = require('express')
 const port = process.env.PORT
+
 const errorHandler = require('./middleswares/errorHandler')
 
 const app = express({
@@ -11,7 +12,6 @@ const app = express({
 })
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 
 require('./routes/index')(app)
 require('./routes/user')(app)
