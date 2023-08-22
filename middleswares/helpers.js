@@ -6,7 +6,6 @@ class Helpers {
 
   static async validatePassword(password) {
     try {
-      const newOrg = await orgModel.create(req.body);
 
       return
     } catch (err) {

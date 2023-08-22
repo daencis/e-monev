@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const cors = require('cors')
 const port = process.env.PORT
+
 const errorHandler = require('./middleswares/errorHandler')
 
 const app = express({
@@ -13,7 +14,6 @@ const app = express({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
-
 
 require('./routes/index')(app)
 require('./routes/user')(app)

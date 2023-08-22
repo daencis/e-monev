@@ -157,7 +157,7 @@ exports.updateUser =  async function (req, res, next) {
 
 exports.deleteUser =  async function (req, res, next) {
   try {
-      const user = await User.findByPk(req.body);
+      const user = await User.findByPk(req.body.user_id);
 
       if(!user){
         next({name: "NotFound"})
@@ -169,5 +169,26 @@ exports.deleteUser =  async function (req, res, next) {
       res.status(201).json({ statusCode: 200,  message: "Penghapusan data berhasil"});
   } catch (err) {
       next(err); 
+  }
+}
+
+exports.getUserDetail =  async function (req, res, next) {
+  try {
+    const user = await User.findByPk(req.params.id, {
+      where: {status_id: 1},
+      attributes: {exclude: ['password']},
+      include: [
+        {model: Status, as: 'status'},
+        {model: Models.organization, as: 'organization'}
+      ],
+    });
+
+    return res.status(201).json({
+      statusCode: 200,
+      message: "Pengambilan data berhasil",
+      data: user
+    });
+  } catch (error) {
+    next(error)
   }
 }

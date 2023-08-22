@@ -1,7 +1,23 @@
-const bcrypt = require("bcryptjs");
-
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const user = sequelize.define("user", {
+  class user extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    
+    static associate(models) {
+      // define association here
+      user.belongsTo(models.admin_role, { foreignKey: 'admin_role_id' })
+      user.belongsTo(models.organization, { foreignKey: 'organization_id' })
+      user.belongsTo(models.status, { foreignKey: 'status_id' })
+    }
+  }
+  user.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -68,8 +84,10 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       defaultValue: DataTypes.NOW
     }
-  })
-  
+  }, {
+    sequelize,
+    modelName: 'user',
+  });
   user.addHook('beforeCreate', async user => {
     if (user.password){
         const salt = await bcrypt.genSalt(8);
@@ -83,12 +101,5 @@ module.exports = (sequelize, DataTypes) => {
       return user.password = await bcrypt.hash(user.password, salt);
     }
   })
-
-  user.associate = (models) => {
-    user.belongsTo(models.admin_role, { foreignKey: 'admin_role_id' })
-    user.belongsTo(models.organization, { foreignKey: 'organization_id' })
-    user.belongsTo(models.status, { foreignKey: 'status_id' })
-  }
-
   return user;
 };
