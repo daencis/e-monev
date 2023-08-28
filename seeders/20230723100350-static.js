@@ -19,8 +19,9 @@ module.exports = {
     ])
 
     await queryInterface.bulkInsert('admin_role', [
-      {id: 1, name: 'Siper Admin'},
+      {id: 1, name: 'Super Admin'},
       {id: 2, name: 'OPD'},
+      {id: 3, name: 'Admin Bidang'},
     ])
   },
 
